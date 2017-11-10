@@ -1,0 +1,199 @@
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using System.Json;
+using System.Runtime.Serialization.Json;
+using AzureTokenCache;
+
+namespace Synchroniser
+{
+    public interface ITokenConsumer
+    {
+        /// <summary>
+        /// Call a path on Dynamics server with Bearer token
+        /// Pass the resulting stream directly to the caller
+        /// </summary>
+        /// <param name="relativePath">/entity</param>
+        /// <returns>Stream</returns>
+        Task<Stream> GetStreamAsync(string path);
+
+        /// <summary> Sends an HTTP message containing a JSON payload to the target URL.
+        /// Not expecting to receive content back.</summary>
+        /// <typeparam name="T">Type of the data to send in the message content (payload)</typeparam>
+        /// <param name="method">The HTTP method to invoke</param>
+        /// <param name="requestUri">The relative URL of the message request</param>
+        /// <param name="value">The data to send in the payload. The data will be converted to a serialized JSON payload. </param>
+        /// <returns>An HTTP response message</returns>
+        Task<HttpResponseMessage> SendJsonAsync<T>(HttpMethod method, string requestUri, T value);
+    }
+
+    /// <summary>
+    /// A token consumer of Microsoft.IdentityModel.Clients.ActiveDirectory.TokenCache backed by file
+    /// This intends to be used for service account which is used to talk to another API, e.g CRM
+    /// </summary>
+    public class CRMClient : ITokenConsumer
+    {
+        private static readonly HttpClient _httpClient;
+
+        private string _authority;
+        private string Resource;
+        private string ClientID;
+        private string ClientSecret;
+        private ClientCredential Credential;
+        private AuthenticationContext AuthContext;
+        private FileCache FileTokenCache;
+
+        static CRMClient()
+        {
+            _httpClient = new HttpClient();
+            _httpClient.DefaultRequestHeaders.Add("OData-MaxVersion", "4.0");
+            _httpClient.DefaultRequestHeaders.Add("OData-Version", "4.0");
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        }
+
+        public CRMClient(string authority, string resource, string clientId, string clientSecret, string apiVersion)
+        {
+            _authority = authority;
+            Resource = resource;
+            ClientID = clientId;
+            ClientSecret = clientSecret;
+            // FIXME: use configuration for FileCache path
+            FileTokenCache = new FileCache("svc_crm_tokencache.data", true);
+            AuthContext = new AuthenticationContext(_authority, FileTokenCache);
+            Credential = new ClientCredential(ClientID, ClientSecret);
+            Console.WriteLine("CRMClient constructor has been called");
+            _httpClient.BaseAddress = new Uri(resource + "/api/data/v" + apiVersion + "/");
+        }
+
+        public async Task<string> GetToken()
+        {
+            var result = await AuthContext.AcquireTokenSilentAsync(Resource, Credential, FileTokenCache.GetUserIdentifier());
+            return result.AccessToken;
+        }
+
+        public static MemoryStream GenerateStreamFromString(string value)
+        {
+            return new MemoryStream(System.Text.Encoding.UTF8.GetBytes(value ?? ""));
+        }
+
+        public static string StreamToJSONString(Stream stream)
+        {
+            if (stream == null) return "{}";
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
+            }
+        }
+
+        /// <summary>
+        /// Deserialize a response stream to a class instance object
+        /// </summary>
+        /// <param name="response"></param>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static T DeserializeObject<T>(Stream response)
+        {
+            var serializer = new DataContractJsonSerializer(typeof(T));
+            return (T) serializer.ReadObject(response);
+        }
+
+        /// <summary>
+        /// Serialize an class instance object to string in JSON
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string SerializeObject<T>(T value)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(T));
+                ser.WriteObject(stream, value);
+                return System.Text.Encoding.UTF8.GetString(stream.ToArray());
+            }
+        }
+
+        /// <summary>
+        /// Parse a stream to JSON
+        /// </summary>
+        /// <param name="stream">We consumed original stream, return another one instead</param>
+        /// <returns>Recovered stream</returns>
+        private Stream ParseStreamToJson(Stream stream)
+        {
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                string response = reader.ReadToEnd();
+                Console.WriteLine("Received string has length = {0}, {1}", response.Length, response);
+                JsonObject json2 = (JsonObject)JsonValue.Parse(response);
+                foreach (var item in json2)
+                {
+                    Console.WriteLine(item);
+                }
+                // Recover(regenerate) a stream to pretend nothing happened
+                return GenerateStreamFromString(response);
+            }
+        }
+
+        public async Task<Stream> GetStreamAsync(string relativePath)
+        {
+            // https://docs.microsoft.com/en-us/dotnet/csharp/tutorials/console-webapiclient
+            Console.WriteLine($"Calling with GetStreamAsync method to {relativePath}");
+            await SetAuthorizationHeader();
+            try
+            {
+                // if not found (404) or has other errors other than success, there is an exception
+                Stream response = await _httpClient.GetStreamAsync(relativePath);
+                // TODO: add debug switch
+                //response = ParseStreamToJson(response);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                // this is a rough handling
+                Console.WriteLine("The request failed with an error.");
+                Console.WriteLine("Base address: {0}", _httpClient.BaseAddress);
+                Console.WriteLine(ex.Message);
+                while (ex.InnerException != null)
+                {
+                    Console.WriteLine("\t* {0}", ex.InnerException.Message);
+                    ex = ex.InnerException;
+                }
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Set Bearer token in Authorization header
+        /// </summary>
+        /// <returns></returns>
+        private async Task SetAuthorizationHeader()
+        {
+            // Set Bearer token every time
+            string accessToken = await GetToken();
+            Console.WriteLine($"Authorization header has Bearer token {accessToken.Substring(0, 10)}...");
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        }
+
+        public async Task<HttpResponseMessage> SendJsonAsync<T>(HttpMethod method, string relativePath, T value)
+        {
+            string content;
+            if (value is JsonObject)
+            {
+                content = value.ToString();
+            } else
+            {
+                content = SerializeObject(value);
+            }
+            HttpRequestMessage request = new HttpRequestMessage(method, relativePath)
+            {
+                Content = new StringContent(content, System.Text.Encoding.UTF8, "application/json")
+            };
+            Console.WriteLine("Calling with SendJsonAsync method: {0} to {1}", content, relativePath);
+            await SetAuthorizationHeader();
+            return await _httpClient.SendAsync(request);
+        }
+    }
+}

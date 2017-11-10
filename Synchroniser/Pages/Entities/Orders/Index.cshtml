@@ -1,0 +1,15 @@
+﻿@page "{orderid?}"
+@model IndexModel
+@{
+    ViewData["Title"] = "CRM Order";
+}
+
+@if (@Model.order != null) {
+<h3>@Model.order.Name</h3>
+<dl class="dl-horizontal">
+    <dt>Description</dt>
+    <dd>@Model.order.Description</dd>
+    <dt>Order ID</dt>
+    <dd>@Model.order.OrderID</dd>
+</dl>
+}

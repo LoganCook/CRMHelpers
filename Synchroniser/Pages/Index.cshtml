@@ -1,0 +1,64 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<h3>Get the accounts created since</h3>
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<form method="post" class="form-inline">
+    <div class="form-group">
+        <label for="earliest">The earliest</label>
+        <input type="text" class="form-control" id="earliest" placeholder="@Model.Earliest" asp-for="Earliest">
+        <span asp-validation-for="Earliest" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+</form>
+
+@if (!string.IsNullOrEmpty(@Model.Message))
+{
+    <h5 class="alert alert-info">@Model.Message</h5>
+}
+
+
+<h3>New Accounts</h3>
+<table id="userTable" class="table" v-cloak v-if="users.length > 0">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>WhenCreated</th>
+            <th>Email</th>
+            <th>In CRM</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr v-for="row in users">
+            <td><a :href="'/AD/User/' + row.uidnumber">{{ row.cn }}</a></td>
+            <td>{{ row.whencreated }}</td>
+            <td>{{ row.mail }}</td>
+            <td :id="row.tdId">{{ row.tdId }}</td>
+        </tr>
+    </tbody>
+</table>
+<p class="alert alert-warning">If the same email appears more than once, only the first AD user is checked in CRM.</p>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.4.4/vue.js"></script>
+    <script src="~/scripts/indexpage.js"></script>
+    <script>
+        var userTable = new Vue({
+            el: '#userTable',
+            data: { users: @Html.Raw(@Model.GetUserJSArray()) },
+            created: function () {
+                this.users.forEach(function (user) { 
+                    user['tdId'] = getIdFromEamil(user['mail']);
+                });
+            },
+            mounted: function () {
+                this.users.forEach(function (user) {
+                    checkCRM(user['mail'], user['tdId']);
+                });
+            }
+        });
+    </script>
+}

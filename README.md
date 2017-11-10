@@ -1,0 +1,1 @@
+Helpers for making Microsoft Dynamics easy to use for eRSA

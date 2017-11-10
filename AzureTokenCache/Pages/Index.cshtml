@@ -1,0 +1,23 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Cached tokens";
+}
+
+<div class="row">
+    <p>Cached tokens saved in file: @Model.cacheFilePath are:</p>
+    <ul>
+        @foreach (var token in Model.cachedTokens)
+        {
+            <li>
+                <dl>
+                    @foreach (KeyValuePair<string, string> item in token)
+                    {
+                        <dt>@item.Key</dt>
+                        <dd>@item.Value</dd>
+                    }
+                </dl>
+            </li>
+        }
+    </ul>
+</div>

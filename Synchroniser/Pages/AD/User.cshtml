@@ -1,0 +1,29 @@
+﻿@page "{id:int}"
+@*id is uidNumber*@
+@model UserModel
+@{
+    ViewData["Title"] = "Active Directory User";
+}
+
+<h3>User information from Active Directory</h3>
+@if (@Model.Detail != null)
+{
+    <dl class="dl-horizontal">
+        @foreach (KeyValuePair<string, string> item in Model.Detail)
+        {
+            <dt>@item.Key</dt>
+            <dd>@item.Value</dd>
+        }
+    </dl>
+}
+
+<p>Do you want to create records for this AD User?</p>
+<ul>
+    <li>Contact</li>
+    <li>Order
+        <ul>
+            <li>Order line</li>
+            <li>Connection (role)</li>
+        </ul>
+    </li>
+</ul>

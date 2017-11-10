@@ -1,0 +1,3 @@
+# configure files with secret
+secret*.json
+*tokencache.data
