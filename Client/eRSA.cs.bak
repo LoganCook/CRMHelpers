@@ -1,0 +1,162 @@
+﻿using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace Client
+{
+    /// <summary>
+    /// Functions targeted to eRSA MS Dynamics
+    /// </summary>
+    public class ERSA: CRMClient
+    {
+        public ERSA(string authority, string resource, string clientId, string clientSecret, string apiVersion):
+            base(authority, resource, clientId, clientSecret, apiVersion)
+        {
+
+        }
+
+        /// <summary>
+        /// Check if a Contact with given emailAddress exists in MS Dynamics
+        /// </summary>
+        /// <param name="emailAddress"></param>
+        /// <returns>JSON</returns>
+        public async Task<string> CheckContact(string emailAddress)
+        {
+            string query = Models.Contact.GetCheckQuery(emailAddress);
+            string result = "{}";
+            try
+            {
+                result = StreamToJSONString(await GetStreamAsync(query));
+            }
+            catch (System.Net.Http.HttpRequestException ex)
+            {
+                Console.WriteLine("Captured at api endpoint");
+                Console.WriteLine("HTTP request failed: {0}", ex.ToString());
+                Console.Write("Exception Type: ");
+                Console.WriteLine(ex.GetType().ToString());
+                Console.WriteLine("Exception: " + ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("Inner exception is: {0}", ex.InnerException.GetType().ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Non-HTTP exception captured.");
+                Console.WriteLine(ex.ToString());
+            }
+            return result;
+        }
+
+        public async Task<Models.Contact> GetContact(string emailAddress)
+        {
+            string query = Models.Contact.GetCheckQuery(emailAddress);
+            Models.Contact result = null;
+            try
+            {
+                Stream stream = await GetStreamAsync(query);
+                if (stream != null)
+                {
+                    result = DeserializeObject<Models.Contact>(stream);
+                }
+            }
+            catch (System.Net.Http.HttpRequestException ex)
+            {
+                Console.WriteLine("Captured at api endpoint");
+                Console.WriteLine("HTTP request failed: {0}", ex.ToString());
+                Console.Write("Exception Type: ");
+                Console.WriteLine(ex.GetType().ToString());
+                Console.WriteLine("Exception: " + ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("Inner exception is: {0}", ex.InnerException.GetType().ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Non-HTTP exception captured.");
+                Console.WriteLine(ex.ToString());
+            }
+            return result;
+        }
+
+        public async Task<Models.Contact> GetContact(Guid contactID)
+        {
+            string query = Models.Contact.Get(contactID);
+            Models.Contact result = null;
+            try
+            {
+                result = DeserializeObject<Models.Contact>(await GetStreamAsync(query));
+            }
+            catch (System.Net.Http.HttpRequestException ex)
+            {
+                Console.WriteLine("Captured at api endpoint");
+                Console.WriteLine("HTTP request failed: {0}", ex.ToString());
+                Console.Write("Exception Type: ");
+                Console.WriteLine(ex.GetType().ToString());
+                Console.WriteLine("Exception: " + ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("Inner exception is: {0}", ex.InnerException.GetType().ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Non-HTTP exception captured.");
+                Console.WriteLine(ex.ToString());
+            }
+            return result;
+        }
+
+        public delegate T ty<T>();
+
+        public async Task<List<Models.Account>> Wrapper()
+        {
+            try
+            {
+                return await GetAccounts();
+            }
+            catch (System.Net.Http.HttpRequestException ex)
+            {
+                Console.WriteLine("Captured at api endpoint");
+                Console.WriteLine("HTTP request failed: {0}", ex.ToString());
+                Console.Write("Exception Type: ");
+                Console.WriteLine(ex.GetType().ToString());
+                Console.WriteLine("Exception: " + ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("Inner exception is: {0}", ex.InnerException.GetType().ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Non-HTTP exception captured.");
+                Console.WriteLine(ex.ToString());
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Get a Dictionary of account names and their accountid
+        /// </summary>
+        public async Task<List<Models.Account>> GetAccounts()
+        {
+            string query = Models.Account.List();
+
+            Models.OData<Models.Account> accounts = DeserializeObject<Models.OData<Models.Account>>(await GetStreamAsync(query));
+            Console.WriteLine("Inside: Total count = {0}", accounts.Value.Count);
+            foreach (var account in accounts.Value)
+            {
+                Console.WriteLine("{0} {1}", account.Id, account.Name);
+            }
+            return accounts.Value;
+        }
+
+        public async Task<Dictionary<string, string>> GetAccountDict(List<Models.Account> accounts)
+        {
+            return Utils.FromListToDict(await GetAccounts(), "Name", "Id");
+        }
+
+    }
+}

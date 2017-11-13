@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Synchroniser.Models
+namespace Client.Types
 {
     // This is only for connecting Order and Contact with ConnectionRoles in team category
     [DataContract]

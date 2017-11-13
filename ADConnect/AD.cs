@@ -58,6 +58,10 @@ namespace ADConnectors
             }
         }
 
+        public void Dispose() {
+            if (_domain != null) _domain.Dispose();
+        }
+
         /// <summary>
         /// Convert ResultPropertyCollection to Dictionary
         /// </summary>
@@ -136,7 +140,7 @@ namespace ADConnectors
 
                 int count = 0;
                 // https://technet.microsoft.com/en-us/library/aa996205(v=exchg.65).aspx#DoingASearchUsingADUC
-                string userFilter = HELPER.CrateFilter(whenCreated);
+                string userFilter = HELPER.CreateFilter(whenCreated);
                 using (DirectorySearcher newAccounts = new DirectorySearcher(_domain, userFilter, HELPER.CREATION_PROPERTIES))
                 {
                     foreach (SearchResult res in newAccounts.FindAll())

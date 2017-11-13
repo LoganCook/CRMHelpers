@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Synchroniser.Models
+namespace Client.Types
 {
     [DataContract]
     public class Product
     {
         [DataMember(Name = "productid")]
-        public string Id { set; get; }
+        public string ID { set; get; }
 
         [DataMember(Name = "name")]
         public string Name { set; get; }

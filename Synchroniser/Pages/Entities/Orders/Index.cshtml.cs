@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Synchroniser.Models;
+using Client;
+using Client.Types;
 
 namespace Synchroniser.Pages.Entities.Orders
 {
@@ -33,8 +34,7 @@ namespace Synchroniser.Pages.Entities.Orders
                 return Page();
             }
 
-            // FIXME:
-            // This NotFound is very rough: it says webpage cannot be found as a server response not an app response
+            // FIXME: This NotFound is very rough: it says webpage cannot be found as a server response not an app response
             Console.WriteLine($"Not found {orderid}");
             return NotFound($"Order by id {orderid} has not been found.");
         }

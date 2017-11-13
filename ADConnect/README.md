@@ -25,7 +25,7 @@ The applicaion needs `ad_connection.json` with these keys to connect AD var LDAP
 }
 ```
 
-`ForceSSL` is optional, which default is false. `UseSSL` can be omitted but SHOULD not do it.
+`ForceSSL` is optional, which by default is false. `UseSSL` can be omitted but SHOULD not do it. On Linux with Novell library, always set `ForceSSL = true`.
 
 ## Connect to AD over ssl
 

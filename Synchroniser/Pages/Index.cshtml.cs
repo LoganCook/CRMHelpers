@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Logging;
 using ADConnectors;
+using Client;
 
 namespace Synchroniser.Pages
 {

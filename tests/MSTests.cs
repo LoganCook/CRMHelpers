@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Json;
 using Microsoft.AspNetCore.WebUtilities;
-using Synchroniser.Models;
+using Client.Types;
 
 /* Console.Write* only works when:
  * There are errors,
@@ -48,7 +48,7 @@ namespace tests
                 OrderID = "new_orderid",
                 OrderedProducts = orderedProducts
             };
-            JsonObject recover = (JsonObject)JsonValue.Parse(Synchroniser.CRMClient.SerializeObject<Order4Creation>(order));
+            JsonObject recover = (JsonObject)JsonValue.Parse(Client.CRMClient.SerializeObject<Order4Creation>(order));
             Console.WriteLine(recover.ToString());
             Assert.AreEqual(typeof(Order4Creation).GetProperties().Length, recover.Count);
             Assert.IsTrue(recover.ContainsKey("customerid_account@odata.bind"));
@@ -76,7 +76,7 @@ namespace tests
                 ContactID = testGuid,
                 RoleID = testGuid
             };
-            JsonObject recover = (JsonObject)JsonValue.Parse(Synchroniser.CRMClient.SerializeObject<Connection>(connn));
+            JsonObject recover = (JsonObject)JsonValue.Parse(Client.CRMClient.SerializeObject<Connection>(connn));
             Assert.AreEqual(typeof(Connection).GetProperties().Length, recover.Count);
         }
     }

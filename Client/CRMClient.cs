@@ -8,7 +8,7 @@ using System.Json;
 using System.Runtime.Serialization.Json;
 using AzureTokenCache;
 
-namespace Synchroniser
+namespace Client
 {
     public interface ITokenConsumer
     {
@@ -81,6 +81,8 @@ namespace Synchroniser
 
         public static string StreamToJSONString(Stream stream)
         {
+            // All returns should be converted from Stream to String
+            // and they are all JSON object in string format
             if (stream == null) return "{}";
             using (StreamReader reader = new StreamReader(stream))
             {
@@ -96,6 +98,7 @@ namespace Synchroniser
         /// <returns></returns>
         public static T DeserializeObject<T>(Stream response)
         {
+            if (response == null) return default(T);
             var serializer = new DataContractJsonSerializer(typeof(T));
             return (T) serializer.ReadObject(response);
         }
@@ -142,17 +145,42 @@ namespace Synchroniser
             // https://docs.microsoft.com/en-us/dotnet/csharp/tutorials/console-webapiclient
             Console.WriteLine($"Calling with GetStreamAsync method to {relativePath}");
             await SetAuthorizationHeader();
+            Stream response = null;
             try
             {
-                // if not found (404) or has other errors other than success, there is an exception
-                Stream response = await _httpClient.GetStreamAsync(relativePath);
+                // Every status code higher than 400 there is an exception
+                response = await _httpClient.GetStreamAsync(relativePath);
                 // TODO: add debug switch
                 //response = ParseStreamToJson(response);
                 return response;
             }
+            catch (HttpRequestException ex)
+            {
+                if (response != null)
+                    ParseStreamToJson(response);
+                if (ex.Message.IndexOf("404") > 0)
+                {
+                    // 404 message (JSON) need to be parsed
+                    // 1. wrong entity says: message: "Resource not found for the segment 'contactscontacts'.", code: ""
+                    // 2. does not exist by ID: message: "contact With Id = 5f880511-b362-e611-80e3-c4346bc43f08 Does Not Exist"
+                    // 3. does not exist by alternative key: message: "A record with the specified key values does not exist in contact entity"
+                    // Query without result: empty value [], 200 status code
+                    Console.WriteLine("404, could it be really not found of record?");
+                } else if (ex.Message.IndexOf("401") > 0)
+                {
+                    Console.WriteLine("Unauthorized. Likely cache has been corrupted.");
+                }
+                else
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+            }
             catch (Exception ex)
             {
                 // this is a rough handling
+                Console.WriteLine(ex.GetType().ToString());
+                if (response != null)
+                    ParseStreamToJson(response);
                 Console.WriteLine("The request failed with an error.");
                 Console.WriteLine("Base address: {0}", _httpClient.BaseAddress);
                 Console.WriteLine(ex.Message);
@@ -161,8 +189,8 @@ namespace Synchroniser
                     Console.WriteLine("\t* {0}", ex.InnerException.Message);
                     ex = ex.InnerException;
                 }
-                return null;
             }
+            return null;
         }
 
         /// <summary>

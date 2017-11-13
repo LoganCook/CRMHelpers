@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
 using Microsoft.AspNetCore.Builder;
@@ -9,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ADConnectors;
+using Client;
+using Client.Entities;
 
 namespace Synchroniser
 {
@@ -19,13 +20,19 @@ namespace Synchroniser
             Configuration = configuration;
         }
 
+        private void DisposeResources()
+        {
+            eRSA.Dispose();
+        }
+
         public IConfiguration Configuration { get; }
+        private IADSearcher eRSA;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            AD eRSA = new AD(Configuration["AD:DomainName"]);
+            eRSA = Creater.GetADConnector(Configuration.GetSection("AD"));
             services.AddSingleton<IADSearcher>(eRSA);
             try
             {
@@ -41,7 +48,7 @@ namespace Synchroniser
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ITokenConsumer crmClient)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime, ITokenConsumer crmClient)
         {
             if (env.IsDevelopment())
             {
@@ -62,6 +69,8 @@ namespace Synchroniser
                     template: "{controller}/{action=Index}/{id?}");
             });
 
+            applicationLifetime.ApplicationStopping.Register(DisposeResources);
+
             app.Run(async context => {
                 var response = context.Response;
                 if (context.Request.Path.Equals("/api/crm/contact"))
@@ -71,7 +80,7 @@ namespace Synchroniser
                         Console.WriteLine("{0}: {1}", kvp.Key, kvp.Value.ToString());
                     }
                     string result = "{}";
-                    string query = Models.Contact.GetCheckQuery(context.Request.Query["email"]);
+                    string query = Contact.GetByEmailQuery(context.Request.Query["email"]);
                     try
                     {
                         result = CRMClient.StreamToJSONString(await crmClient.GetStreamAsync(query));

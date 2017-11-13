@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net.Http;
-using Synchroniser.Models;
+using Client;
+using Client.Types;
 
 
 namespace Synchroniser.Pages.Entities.Orders

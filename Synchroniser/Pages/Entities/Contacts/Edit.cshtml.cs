@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net.Http;
 using System.Json;
+using Client;
+using Client.Entities;
 
 namespace Synchroniser.Pages.Entities.Contacts
 {
@@ -15,7 +17,7 @@ namespace Synchroniser.Pages.Entities.Contacts
         private readonly ITokenConsumer _crmClient;
 
         //[BindProperty]
-        public Models.Contact Contact { get; set; }
+        public Client.Types.Contact Contact { get; set; }
 
         public ContactModel(ITokenConsumer crmClient)
         {
@@ -30,7 +32,7 @@ namespace Synchroniser.Pages.Entities.Contacts
             {
                 return NotFound("Contact does not exist.");
             }
-            Contact = CRMClient.DeserializeObject<Models.Contact>(response);
+            Contact = CRMClient.DeserializeObject<Client.Types.Contact>(response);
             return Page();
         }
 
@@ -60,8 +62,9 @@ namespace Synchroniser.Pages.Entities.Contacts
                 // Cannot use DataContract because selected properties to be updated.
                 JsonObject toUpdate = (JsonObject)JsonValue.Parse("{}");
                 toUpdate["department"] = Request.Form["Contact.Department"].ToString();
+                Contact contact = new Contact((CRMClient)_crmClient);
                 HttpResponseMessage response = await _crmClient.SendJsonAsync(
-                    new HttpMethod("PATCH"), Models.Contact.Get(id), toUpdate);
+                    new HttpMethod("PATCH"), contact.GetObjectURI(id), toUpdate);
                 if (response.StatusCode != System.Net.HttpStatusCode.NoContent)
                 {
                     throw new Exception(response.Content.ToString());

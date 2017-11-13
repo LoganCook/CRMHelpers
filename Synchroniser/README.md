@@ -4,6 +4,11 @@ These contacts are different to normal contact created directly in Dynamics beca
 
 ### Dependencies
 
+System.Json
+```
+dotnet add package System.Json
+```
+
 #### AD
 
 The package [System.DirectoryServices](https://dotnet.myget.org/feed/dotnet-core/package/nuget/System.DirectoryServices) is in *myget* instead of *nuget*.
