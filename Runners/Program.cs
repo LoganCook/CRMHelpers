@@ -146,9 +146,16 @@ namespace Runners
 
                 DateTime current = DateTime.Now;
                 TimeZoneInfo localZone = TimeZoneInfo.Local;  // hard-coded to Adelaide time zone
-                if (localZone.Id != "Cen. Australia Standard Time")
+                if (localZone.Id != "Cen. Australia Standard Time" || localZone.Id != "Australia/Adelaide")
                 {
-                    current = TimeZoneInfo.ConvertTime(current, TimeZoneInfo.FindSystemTimeZoneById("Cen. Australia Standard Time"));
+                    try
+                    {
+                        current = TimeZoneInfo.ConvertTime(current, TimeZoneInfo.FindSystemTimeZoneById("Cen. Australia Standard Time"));
+                    } catch (TimeZoneNotFoundException)
+                    {
+                        // On Linux, timezone ids are different: https://github.com/dotnet/corefx/issues/11897
+                        current = TimeZoneInfo.ConvertTime(current, TimeZoneInfo.FindSystemTimeZoneById("Australia/Adelaide"));
+                    }
                 }
                 mailer.Send(receivers, string.Format("CRMHelpers messages on {0}", current), content);
             }
