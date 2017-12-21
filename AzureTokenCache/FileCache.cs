@@ -49,10 +49,12 @@ namespace AzureTokenCache
             IList<Dictionary<string, string>> tokens = new List<Dictionary<string, string>>();
             foreach (var item in ReadItems())
             {
-                Dictionary<string, string> token = new Dictionary<string, string>();
-                token["DisplayableId"] = item.DisplayableId;
-                token["Resource"] = item.Resource;
-                token["ExpiresOn"] = item.ExpiresOn.ToString();
+                Dictionary<string, string> token = new Dictionary<string, string>
+                {
+                    ["DisplayableId"] = item.DisplayableId,
+                    ["Resource"] = item.Resource,
+                    ["ExpiresOn"] = item.ExpiresOn.ToString()
+                };
                 tokens.Add(token);
             }
             return tokens;
@@ -86,6 +88,7 @@ namespace AzureTokenCache
         {
             lock (FileLock)
             {
+                Console.WriteLine("... READING ...");
                 this.Deserialize(File.Exists(CachFilePath) ? File.ReadAllBytes(CachFilePath) : null);
             }
         }
