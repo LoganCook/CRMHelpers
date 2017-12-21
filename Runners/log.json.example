@@ -1,0 +1,15 @@
+{
+  "Serilog": {
+    "MinimumLevel": "Debug",
+    "WriteTo": [
+      {
+        "Name": "File",
+        "Args": {
+          "path": "logs/application.log",
+          "rollingInterval": "Day",
+          "retainedFileCoundLimit": 180
+        }
+      }
+    ]
+  }
+}

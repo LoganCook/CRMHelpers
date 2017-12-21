@@ -251,5 +251,6 @@ paket-files/
 
 # local files
 # configure files with secret
+log.json
 secret*.json
 *tokencache.data
