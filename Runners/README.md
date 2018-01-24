@@ -57,30 +57,21 @@ a template and modify the values. For more choices of configuring logs, referenc
 
 
 ## Deployment on Linux
-Run the command to create files for deployment:
+In this example, CentOS is the targeting system.
+
+With building environment and source code, run the command to create files for deployment:
 
 `dotnet publish -c Release -r centos.7-x64`
 
 The resulting files are in: `bin\Release\netcoreapp2.0\centos.7-x64\publish`.
 
-On targeting system, some required libraries need to be installed. On CentOS, run:
+If it is the first time, on targeting CentOS system, run:
 ```shell
  sudo yum install libunwind
 ```
 
-The application does not need globalisation. To disable the feature and avoid installing ICU libraries, copy [`Runners.runtimeconfig.json`](Runners.runtimeconfig.json) with `System.Globalization.Invariant = true` to
-resolve it. If there are other problems, see [dotnet core doc](https://github.com/dotnet/core/blob/0b1a1631593d6d379fbdfe2b23597a5c25ea4fc9/Documentation/build-and-install-rhel6-prerequisites.md). 
-
-```JavaScript
-// Runners.runtimeconfig.json
-{
-    "runtimeOptions": {
-        "configProperties": {
-            "System.Globalization.Invariant": true
-        },
-    }
-}
-```
+The application runs in [globalization invariant mode](https://github.com/dotnet/corefx/blob/master/Documentation/architecture/globalization-invariant-mode.md).
+With this mode, hosting Linux system does not need to install ICU libraries.
 
 On Linux, the application connect to AD through LDAPS, so in above mentioned `secrets.json`, `UseSSL` has to be `true` but may need `ForceSSL` to be `false`
 in case there are certification problems :disappointed:.
@@ -95,6 +86,8 @@ in case there are certification problems :disappointed:.
     "ForceSSL": false
 }
 ```
+
+If above steps do not work on CentOS, see [dotnet core doc](https://github.com/dotnet/core/blob/0b1a1631593d6d379fbdfe2b23597a5c25ea4fc9/Documentation/build-and-install-rhel6-prerequisites.md).
 
 ## Run the application
 The application accepts two keyed arguments with these names:
