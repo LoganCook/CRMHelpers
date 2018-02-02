@@ -189,7 +189,7 @@ namespace Runners
                     string accountID = manager.GetAccountID(user.Company, user.Department);
                     if (string.IsNullOrEmpty(accountID)) {
                         Log.Warning($"Cannot create new Contact because cannot find accountID to attach for {user.DistinguishedName} could because of wrong department.");
-                        unabledUsers.Add(user.DistinguishedName);
+                        unabledUsers.Add(string.Format("{0} ({1})", user.DistinguishedName, user.Email));
                     } else
                     {
                         Log.Debug($"New contact will be created for {user.DistinguishedName}");
