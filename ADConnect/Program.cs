@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace ADConnectors
 {
@@ -9,6 +10,11 @@ namespace ADConnectors
     {
         static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.File("adconnectors.log")
+                .CreateLogger();
+
             IConfiguration configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("ad_connection.json")

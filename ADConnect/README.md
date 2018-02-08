@@ -9,6 +9,7 @@ dotnet add package Microsoft.Extensions.Configuration
 dotnet add package Microsoft.Extensions.Configuration.Json
 dotnet add package Novell.Directory.Ldap.NETStandard --version 2.3.8
 dotnet add package System.DirectoryServices --version 4.5.0-preview2-25707-02 --source https://dotnet.myget.org/F/dotnet-core/api/v3/index.json
+dotnet add package Serilog.Sinks.File
 ```
 
 ## Configure how to connect AD
