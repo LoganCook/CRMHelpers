@@ -88,8 +88,11 @@ namespace Runners
             Program program = new Program(configuration);
             (List<string> createdUsers, List<string> unabledUsers, List<Dictionary<string, string>> exceptionUsers) = await program.CheckUserInCRM(users);
 
-            string message = ListsToMessage(incompleteUsers, unabledUsers, exceptionUsers, createdUsers);
-            NotifyByEmail(configuration.GetSection("Notifiers"), message);
+            if (incompleteUsers.Count > 0 || unabledUsers.Count > 0 || exceptionUsers.Count > 0 || createdUsers.Count > 0)
+            {
+                string message = ListsToMessage(incompleteUsers, unabledUsers, exceptionUsers, createdUsers);
+                NotifyByEmail(configuration.GetSection("Notifiers"), message);
+            }
 
             Log.CloseAndFlush();
         }

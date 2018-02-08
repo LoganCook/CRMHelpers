@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace ADConnectors
 {
@@ -147,12 +148,13 @@ namespace ADConnectors
     // all caller need to use using ?
     public static class Creater {
         public static IADSearcher GetADConnector(IConfiguration configuration) {
-            Console.WriteLine("Runtime is Linux = {0}", System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux));
             if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows)) {
+                Log.Debug("Runtime is Windows");
                 return new AD(configuration);
             }
             else
             {
+                Log.Debug("Runtime is Linux");
                 return new NovellLdap(configuration);
             }
         }
