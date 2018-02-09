@@ -30,8 +30,7 @@ namespace Client.Entities
         /// </summary>
         /// <param name="emailAddress"></param>
         /// <returns></returns>
-        // FIXME: this is not really working outside of Client.Entities because of lacking ENDPOINT in the query
-        public static string GetByEmailQuery(string emailAddress)
+        public string GetByEmailQuery(string emailAddress)
         {
             if (string.IsNullOrEmpty(emailAddress))
                 throw new ArgumentException("email for checking a Contact has not been provided");

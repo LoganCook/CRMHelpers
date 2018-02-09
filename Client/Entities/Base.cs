@@ -19,6 +19,7 @@ namespace Client.Entities
 
         /// <summary>
         /// Get method to backend
+        /// Run a query against Dynamics and return a JSON string of the response
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
@@ -47,6 +48,27 @@ namespace Client.Entities
             }
             return null;
         }
+
+        /// <summary>
+        /// Run a query against Dynamics and return a JSON string of the response
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public async Task<string> GetJsonStringAsync(string query)
+        {
+            return CRMClient.StreamToJSONString(await GetAsync(query));
+        }
+
+        /// <summary>
+        /// Run a query against Dynamics and return an Entity
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public async Task<T> GetEntityAsync<T>(string query)
+        {
+            return CRMClient.DeserializeObject<T>(await GetAsync(query));
+        }
+
 
         /// <summary>
         /// Get a list of Account's name and parentaccountid

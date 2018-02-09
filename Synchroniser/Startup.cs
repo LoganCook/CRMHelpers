@@ -80,11 +80,12 @@ namespace Synchroniser
                         Console.WriteLine("{0}: {1}", kvp.Key, kvp.Value.ToString());
                     }
                     string result = "{}";
-                    string query = Contact.GetByEmailQuery(context.Request.Query["email"]);
+                    //string query = "contacts" + Contact.GetByEmailQuery(context.Request.Query["email"]);
+                    Contact contact = new Contact((CRMClient)crmClient);
                     try
                     {
-                        result = CRMClient.StreamToJSONString(await crmClient.GetStreamAsync(query));
-                        //result = await crmClient.CheckContact(context.Request.Query["email"]);
+                        //result = CRMClient.StreamToJSONString(await crmClient.GetStreamAsync(query));
+                        result = await contact.GetJsonStringAsync(contact.GetByEmailQuery(context.Request.Query["email"]));
                     }
                     catch (System.Net.Http.HttpRequestException ex)
                     {

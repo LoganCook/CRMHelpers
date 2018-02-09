@@ -79,6 +79,11 @@ namespace Client
             return new MemoryStream(System.Text.Encoding.UTF8.GetBytes(value ?? ""));
         }
 
+        /// <summary>
+        /// Convert a Stream to a (JSON) string
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
         public static string StreamToJSONString(Stream stream)
         {
             // All returns should be converted from Stream to String
