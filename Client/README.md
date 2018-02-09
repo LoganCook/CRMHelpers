@@ -4,7 +4,7 @@ The project needs these packages and projects in this solution as dependencies:
 
 ```shell
 dotnet add package System.Json
-dotnet add .\Commons\Commons.csproj reference .\ADConnect\ADConnect.csproj
+dotnet add reference ..\AzureTokenCache\AzureTokenCache.csproj
 ```
 
 ## Entities namespace

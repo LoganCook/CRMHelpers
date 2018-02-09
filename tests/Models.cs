@@ -43,7 +43,7 @@ namespace tests
         [InlineData("firstName", "lastName", "email", "username", "department", testGuid)]
         public void SimpleContactJsonString(string firstName, string lastName, string email, string username, string department, string accountID)
         {
-            string json = Contact.Create(firstName, lastName, email, username, department, accountID);
+            string json = Contact.Create(firstName, lastName, email, username, department, accountID).ToString();
             JsonValue recover = JsonValue.Parse(json);
             Assert.Equal(6, recover.Count);
             Assert.True(recover.ContainsKey("firstname"));
