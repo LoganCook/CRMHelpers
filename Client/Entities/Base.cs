@@ -9,7 +9,7 @@ namespace Client.Entities
 {
     public abstract class Base
     {
-        protected CRMClient _connector;  // initialised outside, here just a palce holder
+        protected CRMClient _connector;  // initialised outside, here just a place holder
         protected string ENDPOINT = "";  // Entities end point
 
         public Base(CRMClient conn)
@@ -31,7 +31,7 @@ namespace Client.Entities
             }
             catch (System.Net.Http.HttpRequestException ex)
             {
-                Console.WriteLine("Captured at api endpoint");
+                Console.WriteLine("Captured at API endpoint");
                 Console.WriteLine("HTTP request failed: {0}", ex.ToString());
                 Console.Write("Exception Type: ");
                 Console.WriteLine(ex.GetType().ToString());
@@ -123,7 +123,7 @@ namespace Client.Entities
             if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
             {
                 string newEntityID = response.Headers.GetValues("OData-EntityId").FirstOrDefault();
-                Console.WriteLine($"New entity url: {newEntityID}");
+                Console.WriteLine($"New entity URI: {newEntityID}");
                 Console.WriteLine("New entity ID: {0}", Utils.GetIdFromUrl(newEntityID));
             }
             else

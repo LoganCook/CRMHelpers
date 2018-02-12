@@ -45,8 +45,7 @@ namespace Client.Entities
         // eRSA has emailaddress1 as a key in Contact, so there is always only one Contact returned
         public async Task<Types.Contact> GetByEmail(string emailAddress)
         {
-            string query = GetByEmailQuery(emailAddress);
-            return CRMClient.DeserializeObject<Types.Contact>(await GetAsync(query));
+            return await GetEntityAsync<Types.Contact>(GetByEmailQuery(emailAddress));
         }
 
         /// <summary>
