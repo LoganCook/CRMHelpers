@@ -153,24 +153,25 @@ namespace Client
             Stream response = null;
             try
             {
-                // Every status code higher than 400 there is an exception
+                // When status code is not in the range of [200, 299] GetStreamAsync throws an exception
                 response = await _httpClient.GetStreamAsync(relativePath);
                 // TODO: add debug switch
-                //response = ParseStreamToJson(response);
+                // response = ParseStreamToJson(response);
                 return response;
             }
             catch (HttpRequestException ex)
             {
+                // There may not be any response when there is an exception
                 if (response != null)
                     ParseStreamToJson(response);
                 if (ex.Message.IndexOf("404") > 0)
                 {
-                    // 404 message (JSON) need to be parsed
+                    // Possible 404 messages (JSON) which are not available when call _httpClient.GetStreamAsync, reference only
                     // 1. wrong entity says: message: "Resource not found for the segment 'contactscontacts'.", code: ""
                     // 2. does not exist by ID: message: "contact With Id = 5f880511-b362-e611-80e3-c4346bc43f08 Does Not Exist"
                     // 3. does not exist by alternative key: message: "A record with the specified key values does not exist in contact entity"
                     // Query without result: empty value [], 200 status code
-                    Console.WriteLine("404, could it be really not found of record?");
+                    Console.WriteLine($"404, problematic uri: {relativePath}");
                 } else if (ex.Message.IndexOf("401") > 0)
                 {
                     Console.WriteLine("Unauthorized. Likely cache has been corrupted.");
