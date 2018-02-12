@@ -54,14 +54,22 @@ namespace Client
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public CRMClient(string authority, string resource, string clientId, string clientSecret, string apiVersion)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="authority"></param>
+        /// <param name="resource"></param>
+        /// <param name="clientId"></param>
+        /// <param name="clientSecret"></param>
+        /// <param name="apiVersion"></param>
+        /// <param name="filePath">optional, default = .\svc_crm_tokencache.data</param>
+        public CRMClient(string authority, string resource, string clientId, string clientSecret, string apiVersion, string filePath = @".\svc_crm_tokencache.data")
         {
             _authority = authority;
             Resource = resource;
             ClientID = clientId;
             ClientSecret = clientSecret;
-            // FIXME: use configuration for FileCache path
-            FileTokenCache = new FileCache("svc_crm_tokencache.data", true);
+            FileTokenCache = new FileCache(filePath, true);
             AuthContext = new AuthenticationContext(_authority, FileTokenCache);
             Credential = new ClientCredential(ClientID, ClientSecret);
             Console.WriteLine("CRMClient constructor has been called");

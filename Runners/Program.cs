@@ -17,7 +17,8 @@ namespace Runners
         public Program(IConfiguration configuration)
         {
             _crmClient = new CRMClient(configuration["Dynamics:Authority"], configuration["Dynamics:Resource"],
-                configuration["Dynamics:ClientId"], configuration["Dynamics:ClientSecret"], configuration["Dynamics:Version"]);
+                configuration["Dynamics:ClientId"], configuration["Dynamics:ClientSecret"], configuration["Dynamics:Version"],
+                configuration["Dynamics:TokenCache"]);
         }
 
         /// <summary>

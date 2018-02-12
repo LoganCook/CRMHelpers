@@ -7,14 +7,15 @@ using Microsoft.IdentityModel.Clients.ActiveDirectory;
 namespace AzureTokenCache
 {
     // http://www.cloudidentity.com/blog/2014/07/09/the-new-token-cache-in-adal-v2/
- 
+
     /// <summary>
-    /// Persistent file storage for TokenCache
+    /// Persistent file storage for TokenCache of a single user
     /// </summary>
     public class FileCache : TokenCache
     {
         public string CachFilePath { get; }
         private static readonly object FileLock = new object();
+        private byte[] cacheBits;
 
         public FileCache(string filePath = @".\tokencache.data", bool shouldExist = false)
         {
@@ -24,11 +25,38 @@ namespace AzureTokenCache
             }
             CachFilePath = filePath;
             ReadFromFile();
-            BeforeAccess = BeforeAccessNotification;
             AfterAccess = AfterAccessNotification;
         }
 
-#region public methods
+        internal void ReadFromFile()
+        {
+            lock (FileLock)
+            {
+                if (File.Exists(CachFilePath))
+                    cacheBits = File.ReadAllBytes(CachFilePath);
+                this.Deserialize(cacheBits);
+            }
+        }
+
+        // Triggered right after ADAL accessed the cache.
+        // If the HasStateChanged flag is set, ADAL changed the content of the cache
+        void AfterAccessNotification(TokenCacheNotificationArgs args)
+        {
+            // only write if the access operation resulted in a cache update
+            if (this.HasStateChanged) SaveToFile();
+        }
+
+        void SaveToFile()
+        {
+            lock (FileLock)
+            {
+                cacheBits = this.Serialize();
+                File.WriteAllBytes(CachFilePath, cacheBits);
+                // manually change StateChanged as suggested by CloudIdentity
+                this.HasStateChanged = false;
+            }
+        }
+
         /// <summary>
         /// Display cached tokens for debugging purpose
         /// </summary>
@@ -59,53 +87,15 @@ namespace AzureTokenCache
             }
             return tokens;
         }
-#endregion
-
-        public void SaveToFile()
-        {
-            lock (FileLock)
-            {
-                File.WriteAllBytes(CachFilePath, this.Serialize());
-                // manually change StateChanged as suggested by CloudIdentity
-                this.HasStateChanged = false;
-            }
-        }
 
         public UserIdentifier GetUserIdentifier()
         {
+            // if TokenCahe has not content, it means Identity is no-name
             if (this.Count == 0)
-            {
-                Console.WriteLine("Cache count = {0}", this.Count);
-                // might throw Exception is better because there is no token in the file?
-                Console.WriteLine("Should I throw?, currently return AnyUser");
                 return UserIdentifier.AnyUser;
-            }
+
             var current = this.ReadItems().First(); // Only get the top one, most likely only one
             return new UserIdentifier(current.UniqueId, UserIdentifierType.UniqueId);
-        }
-
-        internal void ReadFromFile()
-        {
-            lock (FileLock)
-            {
-                Console.WriteLine("... READING ...");
-                this.Deserialize(File.Exists(CachFilePath) ? File.ReadAllBytes(CachFilePath) : null);
-            }
-        }
-
-        // Triggered right before ADAL needs to access the cache.
-        // Reload the cache from the persistent store in case it changed since the last access.
-        void BeforeAccessNotification(TokenCacheNotificationArgs args)
-        {
-            ReadFromFile();
-        }
-
-        // Triggered right after ADAL accessed the cache.
-        // If the HasStateChanged flag is set, ADAL changed the content of the cache
-        void AfterAccessNotification(TokenCacheNotificationArgs args)
-        {
-            // only write if the access operation resulted in a cache update
-            if (this.HasStateChanged) SaveToFile();
         }
     }
 }
