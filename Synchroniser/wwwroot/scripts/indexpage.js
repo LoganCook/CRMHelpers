@@ -2,9 +2,9 @@ function getIdFromEamil(email) {
     return "id" + email.replace("@", "_").replace(/\./g, "_");
 }
 function checkCRM(email, id) {
-    $.ajax("/api/crm/contact?email=" + email).done(function (data) {
+    $.ajax("/api/contact/" + email).done(function (data) {
         var content = "No";
-        if ("contactid" in data) {
+        if (data && "contactid" in data) {
             content = "Yes <a href='Entities/Contacts/Edit/" + data["contactid"] + "'>Edit</a>";
         }
         $('#' + id).html(content);
