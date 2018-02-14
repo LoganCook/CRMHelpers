@@ -7,6 +7,9 @@ These contacts are different to normal contact created directly in Dynamics beca
 System.Json
 ```
 dotnet add package System.Json
+dotnet add package Serilog.Settings.Configuration
+dotnet add package Serilog.Extensions.Logging
+dotnet add package Serilog.Sinks.File
 ```
 
 #### AD
