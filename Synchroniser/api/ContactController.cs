@@ -24,11 +24,12 @@ namespace Synchroniser.api
         }
 
         [HttpGet("{email}")]
-        public JsonResult Get(string email)
+        public async Task<Client.Types.Contact> Get(string email)
         {
+            Client.Types.Contact result = null;
             try
             {
-                return Json(_contact.GetByEmail(email));
+                 result = await _contact.GetByEmail(email);
             }
             catch (System.Net.Http.HttpRequestException ex)
             {
@@ -46,7 +47,7 @@ namespace Synchroniser.api
                 _logger.LogError("Non-HTTP exception captured.");
                 _logger.LogError(ex.ToString());
             }
-            return Json("System error, see log");
+            return result;
         }
     }
 }
