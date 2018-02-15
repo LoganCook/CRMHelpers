@@ -21,7 +21,7 @@ namespace Client.Entities
             // because this is a search, it returns a list with 0 or more records
             // this is different to using id
             string query = $"?$filter=name eq '{name}'&$select=accountid";
-            return CRMClient.DeserializeObject<Types.Account>(await GetAsync(query));
+            return await GetEntityAsync<Types.Account>(query);
         }
 
         /// <summary>
