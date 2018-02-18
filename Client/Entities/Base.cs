@@ -4,9 +4,48 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace Client.Entities
 {
+    /// <summary>
+    /// Class for creating simple query string
+    /// </summary>
+    // https://msdn.microsoft.com/en-us/library/gg334767.aspx#BKMK_FilterNavProperties
+    // https://msdn.microsoft.com/en-us/library/mt742424.aspx
+    public static class Query
+    {
+        // Create $select for a simple query
+        public static string CreateList(string[] fields)
+        {
+            return string.Join(",", fields);
+        }
+
+        /// <summary>
+        /// Buld a simple query like this: ?$select=name,revenue,&$orderby=revenue asc,name desc&$filter=revenue 
+        /// </summary>
+        /// <param name="selects">An array of fields need to be retrieved</param>
+        /// <param name="filter">A simple string represent a filter. Caller constructs filter</param>
+        /// <returns></returns>
+        public static string Build(string[] selects, string filter = "")
+        {
+            Dictionary<string, string> parts = new Dictionary<string, string>()
+            {
+                ["$select"] = CreateList(selects)
+            };
+            if (!string.IsNullOrEmpty(filter))
+                parts.Add("$filter", filter);
+
+            return Build(parts);
+        }
+
+        public static string Build(Dictionary<string, string> arguments)
+        {
+            QueryBuilder qb = new QueryBuilder(arguments);
+            return qb.ToQueryString().ToUriComponent();
+        }
+    }
+
     public abstract class Base
     {
         protected CRMClient _connector;  // initialised outside, here just a place holder

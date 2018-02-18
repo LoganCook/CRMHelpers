@@ -186,6 +186,7 @@ namespace Client
                 }
                 else
                 {
+                    Console.WriteLine("Other exception:");
                     Console.WriteLine(ex.ToString());
                 }
             }
