@@ -47,6 +47,7 @@ namespace Client.Entities
             return await List<Types.Account>(query);
         }
 
+        #region for api
         /// <summary>
         /// Get a list of child accounts of an account defined by its name
         /// </summary>
@@ -63,6 +64,7 @@ namespace Client.Entities
             filter.AddCondition("name", "eq", value: parent);
             return await GetJsonStringAsync(xml.ToQueryString());
         }
+        #endregion
 
         public async Task<AccountIDManager> GetAccountIDManager()
         {

@@ -11,7 +11,7 @@ namespace Client.Types
         [DataMember(Name = "accountid")]
         public string ID { set; get; }
 
-        [DataMember(Name = "_parentaccountid_value")]
+        [DataMember(Name = "_parentaccountid_value", EmitDefaultValue = false)]
         public string ParentAccountID { set; get; }
     }
 }

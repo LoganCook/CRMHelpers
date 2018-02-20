@@ -79,20 +79,20 @@ namespace Client.Types
         [DataMember(Name = "contactid")]
         public string ID { get; set; }
 
-        [DataMember(Name = "jobtitle")]
+        [DataMember(Name = "jobtitle", EmitDefaultValue = false)]
         public string Title { get; set; }
 
-        [DataMember(Name = "new_registrationdetails")]
+        [DataMember(Name = "new_registrationdetails", EmitDefaultValue = false)]
         public string Description { get; set; }
 
-        [DataMember(Name = "telephone1")]
+        [DataMember(Name = "telephone1", EmitDefaultValue = false)]
         public string Phone { get; set; }
 
 
-        [DataMember(Name = "createdon")]
+        [DataMember(Name = "createdon", EmitDefaultValue = false)]
         private string CreatedOnString { get; set; }
 
-        [DataMember(Name = "statuscode")]
+        [DataMember(Name = "statuscode", EmitDefaultValue = false)]
         public int Status { get; private set; }
 
         [IgnoreDataMember]

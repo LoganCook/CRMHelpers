@@ -18,7 +18,7 @@ namespace Client.Types
         [DataMember(Name = "new_orderid")]
         public string OrderID { set; get; }
 
-        [DataMember(Name = "description")]
+        [DataMember(Name = "description", EmitDefaultValue = false)]
         public string Description { get; set; }
     }
 
