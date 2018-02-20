@@ -10,9 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using ADConnectors;
 using Client;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Synchroniser
 {
@@ -34,14 +31,7 @@ namespace Synchroniser
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>()
-                .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()  // https://github.com/aspnet/Hosting/issues/793
-                .AddScoped<IUrlHelper>(factory =>
-                {
-                    var actionContext = factory.GetService<IActionContextAccessor>().ActionContext;
-                    return new UrlHelper(actionContext);
-                })
-                .AddMvc();
+            services.AddMvc();
 
             eRSA = Creater.GetADConnector(Configuration.GetSection("AD"));
             services.AddSingleton<IADSearcher>(eRSA);
