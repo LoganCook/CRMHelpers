@@ -30,7 +30,7 @@ namespace Client.Entities
         /// </summary>
         /// <param name="emailAddress"></param>
         /// <returns></returns>
-        public string GetByEmailQuery(string emailAddress)
+        private string GetByEmailQuery(string emailAddress)
         {
             if (string.IsNullOrEmpty(emailAddress))
                 throw new ArgumentException("email for checking a Contact has not been provided");
