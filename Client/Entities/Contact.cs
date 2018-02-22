@@ -15,17 +15,6 @@ namespace Client.Entities
         }
 
         /// <summary>
-        /// Get a Contact by its contactid
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public async Task<Types.Contact> Get(Guid id)
-        {
-            string query = $"({id})";
-            return CRMClient.DeserializeObject<Types.Contact>(await GetAsync(query));
-        }
-
-        /// <summary>
         /// Create a query for a quick check by email in CRM to see if a Contact exists
         /// </summary>
         /// <param name="emailAddress"></param>

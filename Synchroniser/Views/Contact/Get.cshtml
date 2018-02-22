@@ -1,0 +1,15 @@
+﻿@model Client.Types.ContactBase
+
+@{
+    ViewData["Title"] = "Detail of Contact";
+}
+
+<h2>Details of Contact</h2>
+
+<p>What is going on? @ViewData["ID"]</p>
+<dl>
+    <dt>First Name</dt>
+    <dd>@Model.Firstname</dd>
+    <dt>Last Name</dt>
+    <dd>@Model.Lastname</dd>
+</dl>

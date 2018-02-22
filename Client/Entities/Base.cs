@@ -119,35 +119,47 @@ namespace Client.Entities
         }
 
         /// <summary>
-        /// Get an URI of entity with an ID for updating
+        /// Query of an entity by an ID
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public string GetObjectURI(Guid id)
+        protected string GetEntityByIdQuery(Guid id)
         {
-            return $"{ENDPOINT}({id})";
+            return $"({id})";
         }
 
         /// <summary>
-        /// Get an URI of entity with an ID for updating
+        /// Query of an entity by an ID
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public string GetObjectURI(string id)
+        protected string GetEntityByIdQuery(string id)
         {
-            return $"{ENDPOINT}({id})";
+            return GetEntityByIdQuery(new Guid(id));
         }
 
+        /// <summary>
+        /// Get an entity by its id
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <returns>null or entity</returns>
+        public async Task<T> Get<T>(Guid id)
+        {
+            T result = await GetEntityAsync<T>(GetEntityByIdQuery(id));
+            return result;
+        }
         /// <summary>
         /// Update an entity represented by its id with fields in content of either one of Types or JsonObject
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="content"></param>
+        /// <param name="content">Either JsonObject or one of types</param>
         /// <returns></returns>
         public async Task Update<T>(string id, T content)
         {
+            // requires ENDPOINT to build url of the entity by the id
             HttpResponseMessage response = await _connector.SendJsonAsync(
-                new HttpMethod("PATCH"), GetObjectURI(id), content);
+                new HttpMethod("PATCH"), $"{ENDPOINT}({id})", content);
             if (response.StatusCode != System.Net.HttpStatusCode.NoContent)
             {
                 //Utils.DisplayResponse(response);

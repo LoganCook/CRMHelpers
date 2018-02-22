@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace Client.Types
 {
     /// <summary>
-    /// Contact with basic fileds for creation
+    /// Contact with basic fields for creation
     /// </summary>
     [DataContract]
     public class ContactBase

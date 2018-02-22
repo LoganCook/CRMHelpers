@@ -220,6 +220,7 @@ namespace Client
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         }
 
+        // FIXME: should have two wrappers and one send
         public async Task<HttpResponseMessage> SendJsonAsync<T>(HttpMethod method, string relativePath, T value)
         {
             string content;

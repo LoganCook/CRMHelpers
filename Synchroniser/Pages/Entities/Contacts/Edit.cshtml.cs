@@ -59,16 +59,11 @@ namespace Synchroniser.Pages.Entities.Contacts
             {
                 // just update what we need, do not send everything back
                 // https://msdn.microsoft.com/en-us/library/mt607664.aspx
-                // Cannot use DataContract because selected properties to be updated.
+                // Cannot use DataContract because selected properties to be updated. Really?
                 JsonObject toUpdate = (JsonObject)JsonValue.Parse("{}");
                 toUpdate["department"] = Request.Form["Contact.Department"].ToString();
                 Contact contact = new Contact((CRMClient)_crmClient);
-                HttpResponseMessage response = await _crmClient.SendJsonAsync(
-                    new HttpMethod("PATCH"), contact.GetObjectURI(id), toUpdate);
-                if (response.StatusCode != System.Net.HttpStatusCode.NoContent)
-                {
-                    throw new Exception(response.Content.ToString());
-                }
+                await contact.Update(id.ToString(), toUpdate);
             }
             return await OnGet(id);
         }
