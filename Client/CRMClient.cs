@@ -220,17 +220,40 @@ namespace Client
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         }
 
-        // FIXME: should have two wrappers and one send
+        /// <summary>
+        /// Send the content of a JsonObject to a relative path by specified method
+        /// </summary>
+        /// <param name="method"></param>
+        /// <param name="relativePath"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public async Task<HttpResponseMessage> SendJsonAsync(HttpMethod method, string relativePath, JsonObject value)
+        {
+            return await SendJsonAsync(method, relativePath, value.ToString());
+        }
+
+        /// <summary>
+        /// Send the content of a Client.Types.* to a relative path by specified method
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="method"></param>
+        /// <param name="relativePath"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public async Task<HttpResponseMessage> SendJsonAsync<T>(HttpMethod method, string relativePath, T value)
         {
-            string content;
-            if (value is JsonObject)
-            {
-                content = value.ToString();
-            } else
-            {
-                content = SerializeObject(value);
-            }
+            return await SendJsonAsync(method, relativePath, SerializeObject(value));
+        }
+
+        /// <summary>
+        /// Send the content of a string to a relative path by specified method
+        /// </summary>
+        /// <param name="method"></param>
+        /// <param name="relativePath"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public async Task<HttpResponseMessage> SendJsonAsync(HttpMethod method, string relativePath, string content)
+        {
             HttpRequestMessage request = new HttpRequestMessage(method, relativePath)
             {
                 Content = new StringContent(content, System.Text.Encoding.UTF8, "application/json")

@@ -23,11 +23,18 @@ namespace Synchroniser.api
             _account = new Account((CRMClient)_crmClient);
         }
 
-        [HttpGet("ChildAccounts/{name}")]
-        public async Task<ContentResult> ChildAccounts(string name)
+        [HttpGet("ChildAccountsRaw/{name}")]
+        public async Task<ContentResult> ChildAccountsRaw(string name)
         {
-            string result = await _account.ListChildAccounts(name);
+            string result = await _account.ListChildAccountsString(name);
             return Content(result, "application/json");
+        }
+
+        [HttpGet("ChildAccounts/{name}")]
+        public async Task<List<Client.Types.Account>> ChildAccounts(string name)
+        {
+            List<Client.Types.Account> result = await _account.ListChildAccounts(name);
+            return result;
         }
     }
 }

@@ -47,13 +47,13 @@ namespace Client.Entities
             return await List<Types.Account>(query);
         }
 
-        #region for api
+        #region private queries
         /// <summary>
-        /// Get a list of child accounts of an account defined by its name
+        /// Build a query to get a list of child accounts of an account defined by its name
         /// </summary>
         /// <param name="parent"></param>
         /// <returns>The result from Dynamics server as string</returns>
-        public async Task<string> ListChildAccounts(string parent)
+        private string ListChildAccountsQuery(string parent)
         {
             var xml = new FetchXML(ENTITY);
             FetchElement entity = xml.EntityElement;
@@ -62,7 +62,24 @@ namespace Client.Entities
             FetchElement linkedEntiry = entity.AddLinkEntity("account", "accountid", "parentaccountid");
             FetchElement filter = linkedEntiry.AddFilter();
             filter.AddCondition("name", "eq", value: parent);
-            return await GetJsonStringAsync(xml.ToQueryString());
+            return xml.ToQueryString();
+        }
+        #endregion
+
+        #region for api
+        /// <summary>
+        /// Get a list of child accounts of an account defined by its name
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <returns>The result from Dynamics server as string</returns>
+        public async Task<string> ListChildAccountsString(string parent)
+        {
+            return await GetJsonStringAsync(ListChildAccountsQuery(parent));
+        }
+
+        public async Task<List<Types.Account>> ListChildAccounts(string parent)
+        {
+            return await List<Types.Account>(ListChildAccountsQuery(parent));
         }
         #endregion
 

@@ -22,7 +22,7 @@ namespace Client.Entities
         }
 
         /// <summary>
-        /// Buld a simple query like this: ?$select=name,revenue,&$orderby=revenue asc,name desc&$filter=revenue 
+        /// Build a simple query like this: ?$select=name,revenue&$filter=revenue 
         /// </summary>
         /// <param name="selects">An array of fields need to be retrieved</param>
         /// <param name="filter">A simple string represent a filter. Caller constructs filter</param>
@@ -39,6 +39,11 @@ namespace Client.Entities
             return Build(parts);
         }
 
+        /// <summary>
+        /// Build a simple query
+        /// </summary>
+        /// <param name="arguments">A dictionary with known keys like $select, $filter,$orderby=revenue asc,name desc</param>
+        /// <returns></returns>
         public static string Build(Dictionary<string, string> arguments)
         {
             QueryBuilder qb = new QueryBuilder(arguments);
