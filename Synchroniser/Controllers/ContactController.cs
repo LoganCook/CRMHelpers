@@ -42,7 +42,7 @@ namespace Synchroniser.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken] // need some preparations?
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Client.Types.Contact content)
         {
             if (ModelState.IsValid)
