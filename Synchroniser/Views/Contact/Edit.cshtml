@@ -1,0 +1,52 @@
+﻿@model Client.Types.Contact
+
+@{
+    ViewData["Title"] = "Edit CRM Contact";
+}
+
+<h3>@Model.Firstname @Model.Lastname</h3>
+<dl class="dl-horizontal">
+    <dt>Name</dt>
+    <dd>@Model.Firstname @Model.Lastname</dd>
+    <dt>Title</dt>
+    <dd>@Model.Title</dd>
+    <dt>ID</dt>
+    <dd>@Model.ID</dd>
+    <dt>Email</dt>
+    <dd>@Model.Email</dd>
+    <dt>Username</dt>
+    <dd>@Model.Username</dd>
+    <dt>Description</dt>
+    <dd>@Model.Description</dd>
+    <dt>Department</dt>
+    <dd>@Model.Department</dd>
+    <dt>Create on</dt>
+    <dd>@Model.CreatedOn</dd>
+    <dt>Phone number</dt>
+    <dd>@Model.Phone</dd>
+    <dt>Status</dt>
+    <dd>@Model.Status</dd>
+</dl>
+
+<h3>Edit</h3>
+<form method="post" class="form-horizontal">
+    <div asp-validation-summary="ModelOnly"></div>
+    <input asp-for="ID" type="hidden" />
+    <div class="form-group">
+        <label asp-for="Department" class="col-sm-2 control-label"></label>
+        <div class="col-sm-10">
+            <input asp-for="Department" required class="form-control" />
+            <span asp-validation-for="Department"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-danger">Save</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

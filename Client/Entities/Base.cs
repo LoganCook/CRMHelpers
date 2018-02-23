@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http.Extensions;
+using System.Json;
 
 namespace Client.Entities
 {
@@ -154,13 +155,32 @@ namespace Client.Entities
             T result = await GetEntityAsync<T>(GetEntityByIdQuery(id));
             return result;
         }
+
         /// <summary>
-        /// Update an entity represented by its id with fields in content of either one of Types or JsonObject
+        /// Update an entity represented by its id with fields in content of either one of Types
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="content">Either JsonObject or one of types</param>
+        /// <param name="content">One of types</param>
         /// <returns></returns>
         public async Task Update<T>(string id, T content)
+        {
+            // requires ENDPOINT to build url of the entity by the id
+            HttpResponseMessage response = await _connector.SendJsonAsync(
+                new HttpMethod("PATCH"), $"{ENDPOINT}({id})", (T) content);
+            if (response.StatusCode != System.Net.HttpStatusCode.NoContent)
+            {
+                //Utils.DisplayResponse(response);
+                throw new HttpRequestException(await Utils.GetErrorMessage(response));
+            }
+        }
+
+        /// <summary>
+        /// Update an entity represented by its id with fields in content of JsonObject
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="content">JsonObject or one of types</param>
+        /// <returns></returns>
+        public async Task Update(string id, JsonObject content)
         {
             // requires ENDPOINT to build url of the entity by the id
             HttpResponseMessage response = await _connector.SendJsonAsync(

@@ -246,7 +246,7 @@ namespace Client
         }
 
         /// <summary>
-        /// Send the content of a string to a relative path by specified method
+        /// Send the content of JOSN in string to a relative path by specified method
         /// </summary>
         /// <param name="method"></param>
         /// <param name="relativePath"></param>
