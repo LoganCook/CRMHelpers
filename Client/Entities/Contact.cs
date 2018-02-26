@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Client.Entities
 {
     /// <summary>
-    /// Contact with basic fileds for creation
+    /// Contact with basic fields for creation
     /// </summary>
     public class Contact : Base
     {

@@ -66,7 +66,7 @@ namespace Client.Entities
         }
         #endregion
 
-        #region for api
+        #region for apis and views
         /// <summary>
         /// Get a list of child accounts of an account defined by its name
         /// </summary>

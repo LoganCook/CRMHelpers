@@ -1,0 +1,20 @@
+﻿@model List<Client.Types.Order>
+
+@{
+    ViewData["Title"] = "Orders of Contact";
+}
+
+<table class="table">
+    <thead>
+        <tr><th>ID</th><th>Name</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+    @foreach (var order in Model)
+    {
+        <tr>
+            <td><a asp-controller="Order" asp-action="Get" asp-route-id="@order.ID">@order.OrderID</a></td>
+            <td>@order.Name</td>
+            <td>@order.Description</td>
+        </tr>
+    }
+    </tbody>

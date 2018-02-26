@@ -15,7 +15,7 @@ namespace Client.Types
         [DataMember(Name = "name")]
         public string Name { set; get; }
 
-        [DataMember(Name = "new_orderid")]
+        [DataMember(Name = "new_orderid", EmitDefaultValue = false)]
         public string OrderID { set; get; }
 
         [DataMember(Name = "description", EmitDefaultValue = false)]
@@ -28,16 +28,10 @@ namespace Client.Types
         [DataMember(Name = "salesorderid")]
         public string ID { set; get; }
         
-        [DataMember(Name = "statuscode")]
+        [DataMember(Name = "statuscode", EmitDefaultValue = false)]
         public int Status { get; private set; }
 
-        public static string Get(string name)
-        {
-            // because this is a search, it returns a list with 0 or more records
-            // this is different to using id
-            return $"salesorders?$filter=name eq '{name}'";
-        }
-
+        // FIXME: need to update reference call from this to Entity::GetByOrderID()
         public static string GetByOrderID(string id)
         {
             return $"salesorders?$filter=new_orderid eq '{id}'";
