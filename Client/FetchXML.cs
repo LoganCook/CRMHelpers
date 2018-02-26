@@ -91,7 +91,7 @@ namespace Client
         /// <param name="name"></param>
         /// <param name="optionals">e.g. alias, aggregate</param>
         /// <returns></returns>
-        public void AddField(string name, Dictionary<string, string> optionals = null)
+        public FetchElement AddField(string name, Dictionary<string, string> optionals = null)
         {
             FetchElement field = AddElement("attribute");
             field.SetAttribute("name", name);
@@ -106,6 +106,21 @@ namespace Client
                     field.SetAttribute(item.Key, item.Value);
                 }
             }
+            return this;
+        }
+
+        /// <summary>
+        /// Create an attribute element for returning field value as alias
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="alias"></param>
+        public FetchElement AddField(string name, string alias)
+        {
+            Dictionary<string, string> option = new Dictionary<string, string>
+            {
+                ["alias"] = alias
+            };
+            return AddField(name, option);
         }
 
         public FetchElement AddFilter(string type = "and")
@@ -121,13 +136,15 @@ namespace Client
         /// <param name="target">Field on which a filter applies to </param>
         /// <param name="op"></param>
         /// <param name="value"></param>
-        public void AddCondition(string target, string op, string value = null)
+        /// <returns>Current element for chaining</returns>
+        public FetchElement AddCondition(string target, string op, string value = null)
         {
             FetchElement condElement = AddElement("condition");
             condElement.SetAttribute("attribute", target);
             condElement.SetAttribute("operator", op);
             if (!string.IsNullOrEmpty(value))
                 condElement.SetAttribute("value", value);
+            return this;
         }
 
         /// <summary>
