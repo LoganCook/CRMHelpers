@@ -6,7 +6,7 @@
 
 <table class="table">
     <thead>
-        <tr><th>ID</th><th>Name</th><th>Description</th></tr>
+        <tr><th>ID</th><th>Name</th><th>Description</th><th>Role</th></tr>
     </thead>
     <tbody>
     @foreach (var order in Model)
@@ -15,6 +15,7 @@
             <td><a asp-controller="Order" asp-action="Get" asp-route-id="@order.ID">@order.OrderID</a></td>
             <td>@order.Name</td>
             <td>@order.Description</td>
+            <td>@order.Role</td>
         </tr>
     }
     </tbody>

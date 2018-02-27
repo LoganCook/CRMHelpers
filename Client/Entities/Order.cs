@@ -38,28 +38,29 @@ namespace Client.Entities
         /// <returns></returns>
         private string GetOrdersOfQuery(Guid contactID)
         {
-            // TODO: Connection role will not change much but to be perfect and complete we
-            // need connectionrole : https://msdn.microsoft.com/en-us/library/mt607607.aspx
-            // PROJECT_ADMIN_ROLE = '8355863e-85fc-e611-810b-e0071b6685b1'
             /*
-            <fetch mapping='logical'>
-                <entity name='salesorder'>
-                    <attribute name='name' />
+            <fetch version="1.0" mapping="logical">
+                <entity name="salesorder">
+                    <attribute name="name" />
+                    <attribute name="description" />
+                    <attribute name="new_orderid" />
                     <link-entity name="connection" from="record1id" to="salesorderid">
-                        <filter type='and'>
-                            <condition attribute='record1objecttypecode' operator='eq' value='1088' />
-                            <condition attribute='record2objecttypecode' operator='eq' value='2' />
-                            <condition attribute='record2roleid' operator='eq' value='8355863e-85fc-e611-810b-e0071b6685b1' />
+                        <filter type="and">
+                            <condition attribute="record1objecttypecode" operator="eq" value="1088" />
+                            <condition attribute="record2objecttypecode" operator="eq" value="2" />
                         </filter>
-                        <link-entity name='contact' from='contactid' to='record2id'>
+                        <link-entity name="connectionrole" from="connectionroleid" to="record2roleid">
+                            <attribute name="name" alias="role" />
+                        </link-entity>
+                        <link-entity name="contact" from="contactid" to="record2id">
                             <filter type="and">
-                                <condition attribute='contactid' operator='eq' value='5f880511-b362-e611-80e3-c4346bc43f98' />
+                                <condition attribute="contactid" operator="eq" value="12ed419f-5863-e611-80e3-c4346bc516e8" />
                             </filter>
                         </link-entity>
                     </link-entity>
                 </entity>
             </fetch>
-             */
+            */
 
             var xml = new FetchXML(ENTITY);
             FetchElement entity = xml.EntityElement;
@@ -70,9 +71,9 @@ namespace Client.Entities
             FetchElement linkedConnection = entity.AddLinkEntity("connection", "record1id", "salesorderid");
             FetchElement connectionFilter = linkedConnection.AddFilter();
             connectionFilter.AddCondition("record1objecttypecode", "eq", "1088")
-                .AddCondition("record2objecttypecode", "eq", "2")
-            // FIXME: hard-coded role id
-                .AddCondition("record2roleid", "eq", "8355863e-85fc-e611-810b-e0071b6685b1");
+                .AddCondition("record2objecttypecode", "eq", "2");
+            linkedConnection.AddLinkEntity("connectionrole", "connectionroleid", "record2roleid")
+                .AddField("name", "role");
 
             FetchElement linkedContact = linkedConnection.AddLinkEntity("contact", "contactid", "record2id");
             FetchElement contactFilter = linkedContact.AddFilter();

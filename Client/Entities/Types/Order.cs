@@ -31,6 +31,9 @@ namespace Client.Types
         [DataMember(Name = "statuscode", EmitDefaultValue = false)]
         public int Status { get; private set; }
 
+        [DataMember(Name = "role")]
+        public string Role { set; get; }
+
         // FIXME: need to update reference call from this to Entity::GetByOrderID()
         public static string GetByOrderID(string id)
         {
