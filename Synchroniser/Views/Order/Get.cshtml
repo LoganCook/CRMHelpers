@@ -1,0 +1,16 @@
+﻿@model Client.Types.OrderBase
+
+@{
+    ViewData["Title"] = "Detail of Order";
+}
+
+<h2>Details of Order</h2>
+
+<dl>
+    <dt>Name</dt>
+    <dd>@Model.Name</dd>
+    <dt>ID</dt>
+    <dd>@Model.OrderID</dd>
+    <dt>Description</dt>
+    <dd>@Model.Description</dd>
+</dl>

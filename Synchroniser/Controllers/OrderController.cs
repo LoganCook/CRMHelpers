@@ -8,18 +8,11 @@ using Client;
 
 namespace Synchroniser.Controllers
 {
-    public class OrderController : ControllerBase<OrderController>
+    public class OrderController : ControllerBase<OrderController, Client.Entities.Order, Client.Types.Order>
     {
-        private Client.Entities.Order order;
-
         public OrderController(ILogger<OrderController> logger, ITokenConsumer crmClient) : base(logger, crmClient)
         {
-            order = new Client.Entities.Order((CRMClient)crmClient);
-        }
-
-        public IActionResult Get()
-        {
-            return Ok("this is good");
+            entity = new Client.Entities.Order((CRMClient)crmClient);
         }
     }
 }
