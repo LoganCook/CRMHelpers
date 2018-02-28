@@ -7,9 +7,9 @@ namespace Client
 {
     // see https://msdn.microsoft.com/en-us/library/gg328332.aspx
     /// <summary>
-    /// Class to create FetchXML entity element for acting with Dynamics CRM
+    /// Class to create FetchXML entity element as an XML doc for acting with Dynamics CRM
     /// </summary>
-    class FetchXML
+    public class FetchXML
     {
         // The meaningful root element of a FetchXml <fetch><entity /></fetch>
         public FetchElement EntityElement { get; }
@@ -34,6 +34,7 @@ namespace Client
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
+        // TODO: re-think if this is needed?
         public FetchElement CreateElement(string element)
         {
             XmlElement newElement = EntityElement.DOC.CreateElement(element);
@@ -53,7 +54,7 @@ namespace Client
     /// <summary>
     /// Class to represent and manipulate elements in FetchXml
     /// </summary>
-    class FetchElement
+    public class FetchElement
     {
         // use to verify alias when in development
         static Regex rgx = new Regex("^[A-Za-z_][a-zA-Z0-9_]{0,}$");
@@ -65,6 +66,42 @@ namespace Client
         {
             Current = element;
             DOC = Current.OwnerDocument;
+        }
+
+        /// <summary>
+        /// Constructor to create building block element for complex queries
+        /// </summary>
+        /// <param name="elementType">Element like link-entity, filter, even condition</param>
+        /// <param name="name">Value of name attribute</param>
+        public FetchElement(string elementType)
+        {
+            DOC = new XmlDocument();
+            Current = DOC.CreateElement(elementType);
+            DOC.AppendChild(Current);
+        }
+
+        /// <summary>
+        /// Constructor to create building block element for complex queries
+        /// </summary>
+        /// <param name="elementType">Element like link-entity, filter, even condition</param>
+        /// <param name="name">Value of name attribute</param>
+        public FetchElement(string elementType, string name) : this(elementType)
+        {
+            if (!string.IsNullOrEmpty(name))
+                Current.SetAttribute("name", name);
+        }
+
+        /// <summary>
+        /// Constructor to create building block element for complex queries
+        /// </summary>
+        /// <param name="elementType">Element like link-entity, filter, even condition</param>
+        /// <param name="attributes"></param>
+        public FetchElement(string elementType, Dictionary<string, string> attributes) : this(elementType)
+        {
+            foreach (var attribute in attributes)
+            {
+                Current.SetAttribute(attribute.Key, attribute.Value);
+            }
         }
 
         /// <summary>
@@ -82,6 +119,16 @@ namespace Client
         public void SetAttribute(string name, string value)
         {
             Current.SetAttribute(name, value);
+        }
+
+        /// <summary>
+        /// Add a building block FetchElement created by helper function to Current FetchElement
+        /// </summary>
+        /// <param name="element"></param>
+        public void AddFragment(FetchElement element)
+        {
+            XmlNode imported = DOC.ImportNode(element.DOC.DocumentElement, true);
+            Current.AppendChild(imported);
         }
 
         #region shortcuts

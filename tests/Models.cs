@@ -106,20 +106,24 @@ namespace tests
             Account account = new Account
             {
                 ID = testGuid,
-                Name = "testAccount"
+                Name = "testAccount",
+                ParentAccountID = testGuid
             };
             string jsonString = Client.CRMClient.SerializeObject<Account>(account);
             JsonObject recover = (JsonObject)JsonValue.Parse(jsonString);
             Assert.Equal(typeof(Account).GetProperties().Length, recover.Count);
             Assert.True(recover.ContainsKey("accountid"));
             Assert.True(recover.ContainsKey("name"));
+            Assert.True(recover.ContainsKey("_parentaccountid_value"));
             Assert.Equal(account.ID, recover["accountid"]);
             Assert.Equal(account.Name, recover["name"]);
+            Assert.Equal(account.ParentAccountID, recover["_parentaccountid_value"]);
 
             using (MemoryStream stringStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(jsonString))) {
                 Account deserialized = Client.CRMClient.DeserializeObject<Account>(stringStream);
                 Assert.Equal(account.ID, deserialized.ID);
                 Assert.Equal(account.Name, deserialized.Name);
+                Assert.Equal(account.ParentAccountID, deserialized.ParentAccountID);
             }
         }
         #endregion
