@@ -1,0 +1,5 @@
+# EditorConfig is awesome: http://EditorConfig.org
+root = true
+
+[*]
+trim_trailing_whitespace = true
