@@ -68,11 +68,11 @@ namespace Client.Entities
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
-        public async Task<Stream> GetAsync(string query)
+        public Task<Stream> GetAsync(string query)
         {
             try
             {
-                return await _connector.GetStreamAsync(ENDPOINT + query);
+                return _connector.GetStreamAsync(ENDPOINT + query);
             }
             catch (System.Net.Http.HttpRequestException ex)
             {
@@ -150,10 +150,9 @@ namespace Client.Entities
         /// <typeparam name="T"></typeparam>
         /// <param name="id"></param>
         /// <returns>null or entity</returns>
-        public async Task<T> Get<T>(Guid id)
+        public Task<T> Get<T>(Guid id)
         {
-            T result = await GetEntityAsync<T>(GetEntityByIdQuery(id));
-            return result;
+            return GetEntityAsync<T>(GetEntityByIdQuery(id));
         }
 
         /// <summary>
