@@ -33,12 +33,6 @@ namespace Client.Types
 
         [DataMember(Name = "role")]
         public string Role { set; get; }
-
-        // FIXME: need to update reference call from this to Entity::GetByOrderID()
-        public static string GetByOrderID(string id)
-        {
-            return $"salesorders?$filter=new_orderid eq '{id}'";
-        }
     }
 
     /// <summary>

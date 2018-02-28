@@ -14,5 +14,16 @@ namespace Synchroniser.Controllers
         {
             entity = new Client.Entities.Order((CRMClient)crmClient);
         }
+
+        // Get an order by its Order ID
+        public async Task<IActionResult> GetByID(string ID)
+        {
+            var result = await entity.List<Client.Types.OrderBase>(entity.GetByOrderIDQuery(ID));
+            if (result != null && result.Count > 0)
+            {
+                return View("Get", result[0]);
+            }
+            return NotFound($"Order by id {ID} has not been found.");
+        }
     }
 }

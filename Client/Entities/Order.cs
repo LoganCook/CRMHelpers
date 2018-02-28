@@ -13,22 +13,22 @@ namespace Client.Entities
             ENDPOINT = "salesorders";
         }
 
-        #region private queries
-        private string GetByNameQuery(string name)
-        {
-            // because this is a search, it returns a list with 0 or more records
-            // this is different to using id
-            return $"salesorders?$filter=name eq '{name}'";
-        }
-
+        #region public queries work with query (utility) methods in Base
         /// <summary>
         /// Get order by its eRSA order ID
         /// </summary>
         /// <param name="id">eRSA order ID: Cloud blar blar, or GOSA0001 etc</param>
         /// <returns></returns>
-        private string GetByOrderIDQuery(string id)
+        public string GetByOrderIDQuery(string id)
         {
-            return $"salesorders?$filter=new_orderid eq '{id}'";
+            return $"?$filter=new_orderid eq '{id}'";
+        }
+        #endregion
+
+        #region private queries
+        private string GetByNameQuery(string name)
+        {
+            return $"?$filter=name eq '{name}'";
         }
 
         /// <summary>

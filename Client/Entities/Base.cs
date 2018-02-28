@@ -116,12 +116,21 @@ namespace Client.Entities
 
 
         /// <summary>
-        /// Get a list of Account's name and parentaccountid
+        /// Get a list of T
         /// </summary>
-        /// <returns></returns>
+        /// <returns>a list with 0 or more records</returns>
         public async Task<List<T>> List<T>(string query)
         {
-            return CRMClient.DeserializeObject<Types.OData<T>>(await GetAsync(query)).Value;
+            try
+            {
+                return CRMClient.DeserializeObject<Types.OData<T>>(await GetAsync(query)).Value;
+            }
+            catch (NullReferenceException)
+            {
+                // If GetAsync returns null, DeserializeObject returns null so we do the same
+                // This was likely caused by something wrong the set up code: wrong end point etc
+                return null;
+            }
         }
 
         /// <summary>
