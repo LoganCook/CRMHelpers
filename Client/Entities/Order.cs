@@ -81,12 +81,34 @@ namespace Client.Entities
 
             return xml.ToQueryString();
         }
+
+        /// <summary>
+        /// A link-entity which can be added to the main order query to get names of ordered product
+        /// </summary>
+        /// <returns></returns>
+        // Not tested used yet
+        private FetchElement OrderLineQuery()
+        {
+            var attributes = new Dictionary<string, string>
+            {
+                { "name", "salesorderdetail" },
+                { "from", "salesorderid" },
+                { "to", "salesorderid" }
+            };
+            FetchElement linkedOrderLine = new FetchElement("link-entity", attributes);
+            linkedOrderLine.AddField("priceperunit")
+                .AddField("quantity")
+                .AddField("manualdiscountamount_base");
+
+            FetchElement linkedProduct = linkedOrderLine.AddLinkEntity("product", "productid", "productid");
+            linkedProduct.AddField("name", "product");
+            return linkedOrderLine;
+        }
         #endregion
 
-        public async Task<List<Types.Order>> ListOrdersOfContact(Guid contactID)
+        public Task<List<Types.Order>> ListOrdersOfContact(Guid contactID)
         {
-            return await List<Types.Order>(GetOrdersOfQuery(contactID));
+            return List<Types.Order>(GetOrdersOfQuery(contactID));
         }
-
     }
 }

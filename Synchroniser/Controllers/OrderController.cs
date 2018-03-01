@@ -18,7 +18,7 @@ namespace Synchroniser.Controllers
         // Get an order by its Order ID
         public async Task<IActionResult> GetByID(string ID)
         {
-            var result = await entity.List<Client.Types.OrderBase>(entity.GetByOrderIDQuery(ID));
+            var result = await entity.List<Client.Types.Order>(entity.GetByOrderIDQuery(ID));
             if (result != null && result.Count > 0)
             {
                 return View("Get", result[0]);

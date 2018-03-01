@@ -1,16 +1,16 @@
-﻿@model Client.Types.OrderBase
+﻿@model Client.Types.Order
 
 @{
-    ViewData["Title"] = "Detail of Order";
+    ViewData["Title"] = "Order summary";
 }
 
-<h2>Details of Order</h2>
+<h2>Order summary</h2>
 
-<dl>
+<dl class="dl-horizontal">
     <dt>Name</dt>
     <dd>@Model.Name</dd>
     <dt>ID</dt>
-    <dd>@Model.OrderID</dd>
+    <dd><a asp-controller="Orderdetail" asp-action="List" asp-route-id="@Model.ID">@Model.OrderID</a></dd>
     <dt>Description</dt>
     <dd>@Model.Description</dd>
 </dl>

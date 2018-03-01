@@ -49,8 +49,10 @@ namespace Client
         static CRMClient()
         {
             _httpClient = new HttpClient();
+            // Compose HTTP requests: https://msdn.microsoft.com/en-us/library/gg334391.aspx
             _httpClient.DefaultRequestHeaders.Add("OData-MaxVersion", "4.0");
             _httpClient.DefaultRequestHeaders.Add("OData-Version", "4.0");
+            _httpClient.DefaultRequestHeaders.Add("Prefer", "odata.include-annotations=OData.Community.Display.V1.FormattedValue");
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 

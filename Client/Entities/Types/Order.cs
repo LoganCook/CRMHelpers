@@ -31,7 +31,7 @@ namespace Client.Types
         [DataMember(Name = "statuscode", EmitDefaultValue = false)]
         public int Status { get; private set; }
 
-        [DataMember(Name = "role")]
+        [DataMember(Name = "role", EmitDefaultValue = false)]
         public string Role { set; get; }
     }
 
@@ -60,28 +60,5 @@ namespace Client.Types
 
         [DataMember(Name = "order_details")]
         public List<OrderDetail>  OrderedProducts { set; get; }
-    }
-
-    [DataContract]
-    public class OrderDetail
-    {
-        [DataMember(Name = "quantity")]
-        public int Quantity { set; get; }
-
-        private Guid productID;
-        [DataMember(Name = "productid@odata.bind")]
-        public string ProductID
-        {
-            set { productID = new Guid(value); }
-            get { return $"/products({productID.ToString()})"; }
-        }
-
-        private Guid unitID;
-        [DataMember(Name = "uomid@odata.bind")]
-        public string UnitID
-        {
-            set { unitID = new Guid(value); }
-            get { return $"/uoms({unitID.ToString()})"; }
-        }
     }
 }

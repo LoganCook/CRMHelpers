@@ -1,0 +1,26 @@
+﻿@model List<Client.Types.OrderdetailSimple>
+
+@{
+    ViewData["Title"] = "Detail of Order";
+}
+
+<h2>Details of Order</h2>
+
+<table class="table">
+    <thead>
+        <tr><th>Product Name</th><th>Type</th><th>Quantity</th><th>Unit</th><th>Price</th><th>Discount</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td><a asp-controller="Product" asp-action="Get" asp-route-id="@product.ProductID">@product.Product</a></td>
+                <td>@product.ProductType</td>
+                <td>@product.Quantity</td>
+                <td>@product.Unit</td>
+                <td>@product.UnitPrice</td>
+                <td>@product.Discount</td>
+            </tr>
+        }
+    </tbody>
+</table>
