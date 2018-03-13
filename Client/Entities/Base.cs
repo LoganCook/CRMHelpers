@@ -56,6 +56,7 @@ namespace Client.Entities
     {
         protected CRMClient _connector;  // initialised outside, here just a place holder
         protected string ENDPOINT = "";  // Entities end point
+        protected string[] commonFileds;
 
         public Base(CRMClient conn)
         {
@@ -134,13 +135,25 @@ namespace Client.Entities
         }
 
         /// <summary>
+        /// Get a list of instance of an entity with common fields
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public Task<List<T>> ListAll<T>()
+        {
+            string query = Query.Build(commonFileds);
+            return List<T>(query);
+        }
+
+        #region Common query builders
+        /// <summary>
         /// Query of an entity by an ID
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         protected string GetEntityByIdQuery(Guid id)
         {
-            return $"({id})";
+            return $"({id})" + Query.Build(commonFileds);
         }
 
         /// <summary>
@@ -152,6 +165,7 @@ namespace Client.Entities
         {
             return GetEntityByIdQuery(new Guid(id));
         }
+        #endregion
 
         /// <summary>
         /// Get an entity by its id
@@ -162,6 +176,18 @@ namespace Client.Entities
         public Task<T> Get<T>(Guid id)
         {
             return GetEntityAsync<T>(GetEntityByIdQuery(id));
+        }
+
+        /// <summary>
+        /// Get an entity by its name with its common fields
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public Task<T> GetByName<T>(string name)
+        {
+            string query = Query.Build(commonFileds, $"name eq '{name}'");
+            return GetEntityAsync<T>(query);
         }
 
         /// <summary>

@@ -6,6 +6,12 @@ using Client;
 
 namespace Synchroniser.Controllers
 {
+    /// <summary>
+    /// Base class for controllers. It has actions: Get, Index
+    /// </summary>
+    /// <typeparam name="UController"></typeparam>
+    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="WType"></typeparam>
     public class ControllerBase<UController, TEntity, WType> : Controller where UController : Controller
                                                                    where TEntity : Client.Entities.Base 
     {
@@ -17,6 +23,11 @@ namespace Synchroniser.Controllers
         {
             _logger = logger;
             _crmClient = crmClient;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            return View(await entity.ListAll<WType>());
         }
 
         public async Task<IActionResult> Get(Guid id)

@@ -1,0 +1,37 @@
+﻿@model List<Client.Types.ProductPricelist>
+
+@{
+    ViewData["Title"] = "Product price list";
+}
+
+<h2>Price lists</h2>
+<p class="alert alert-info">List of products on different price lists. The same product can appears on multiple lists with different values.</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Product Number</th>
+            <th>Unit</th>
+            <th>Price List</th>
+            <th>Amount</th>
+            <th>Pricing Method</th>
+            <th>Percentage</th>
+            <th>Quantity Selling Option</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td><a asp-controller="Product" asp-action="Get" asp-route-id="@item.ProductID">@item.Product</a></td>
+            <td>@item.ProductNumber</td>
+            <td>@item.Unit</td>
+            <td><a asp-controller="Pricelist" asp-action="Get" asp-route-id="@item.PricelistID">@item.Pricelist</a></td>
+            <td>@item.Amount</td>
+            <td>@item.Method</td>
+            <td>@item.Percentage</td>
+            <td>@item.QuantitySellingOption</td>
+        </tr>
+        }
+    </tbody>
+</table>

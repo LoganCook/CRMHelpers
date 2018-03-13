@@ -1,0 +1,31 @@
+﻿@model List<Client.Types.Pricelist>
+
+@{
+    ViewData["Title"] = "Price lists";
+}
+
+<h2>Price lists</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Begin Date</th>
+            <th>End Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.Description</td>
+            <td>@item.Status</td>
+            <td>@item.BeginDate</td>
+            <td>@item.EndDate</td>
+        </tr>
+        }
+    </tbody>
+</table>

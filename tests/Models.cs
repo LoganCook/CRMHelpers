@@ -127,5 +127,19 @@ namespace tests
             }
         }
         #endregion
+
+        #region ProductPricelist
+        [Fact]
+        public void ProductPricelistCanDeserialize()
+        {
+            // Tests run from bin directory
+            using (StreamReader raw = new StreamReader("../../../productpricelists.json"))
+            {
+                var pplist = Client.CRMClient.DeserializeObject<OData<ProductPricelist>>(raw.BaseStream).Value;
+                // current test data productpricelists.json has 42 entries
+                Assert.Equal(42, pplist.Count);
+            }
+        }
+        #endregion
     }
 }
