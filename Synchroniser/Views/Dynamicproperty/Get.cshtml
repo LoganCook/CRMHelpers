@@ -1,0 +1,20 @@
+﻿@model Client.Types.Dynamicproperty
+
+@{
+    ViewData["Title"] = "Dynamic property detail";
+}
+
+<dl class="dl-horizontal">
+    <dt>Name</dt>
+    <dd>@Model.Name</dd>
+    <dt>Description</dt>
+    <dd>@Model.Description</dd>
+    <dt>Type</dt>
+    <dd>@Model.Type</dd>
+    <dt>Is required?</dt>
+    <dd>@Model.IsRequired</dd>
+    <dt>Status</dt>
+    <dd>@Model.Status</dd>
+    <dt>Associated Product ID</dt>
+    <dd><a asp-controller="Product" asp-action="Get" asp-route-id="@Model.ProductID">@Model.Product</a></dd>
+</dl>

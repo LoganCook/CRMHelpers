@@ -1,0 +1,32 @@
+﻿@model Client.Types.Product
+
+@{
+    ViewData["Title"] = "Product information";
+}
+
+<h2>Basic product information</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>State</th>
+            <th>Begin Date</th>
+            <th>End Date</th>
+            <th>Type</th>
+            <th>Unit</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Model.Name</td>
+            <td>@Model.Description</td>
+            <td>@Model.Status</td>
+            <td>@Model.ValidFromDate</td>
+            <td>@Model.ValidToDate</td>
+            <td>@Model.Type</td>
+            <td>@Model.Unit</td>
+        </tr>
+    </tbody>
+</table>

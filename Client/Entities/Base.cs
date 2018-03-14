@@ -63,6 +63,8 @@ namespace Client.Entities
             _connector = conn;
         }
 
+        public string[] Fields { get { return commonFileds; } }
+
         /// <summary>
         /// Get method to backend
         /// Run a query against Dynamics and return a JSON string of the response
@@ -145,7 +147,19 @@ namespace Client.Entities
             return List<T>(query);
         }
 
-        #region Common query builders
+        /// <summary>
+        /// Get a list of filtered instance of an entity with common fields
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public Task<List<T>> ListAll<T>(string filter)
+        {
+            string query = Query.Build(commonFileds, filter);
+            return List<T>(query);
+        }
+
+        #region Common query builders used internally
         /// <summary>
         /// Query of an entity by an ID
         /// </summary>
@@ -154,16 +168,6 @@ namespace Client.Entities
         protected string GetEntityByIdQuery(Guid id)
         {
             return $"({id})" + Query.Build(commonFileds);
-        }
-
-        /// <summary>
-        /// Query of an entity by an ID
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        protected string GetEntityByIdQuery(string id)
-        {
-            return GetEntityByIdQuery(new Guid(id));
         }
         #endregion
 

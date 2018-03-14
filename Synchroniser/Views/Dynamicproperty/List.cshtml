@@ -1,0 +1,35 @@
+﻿@model List<Client.Types.Dynamicproperty>
+
+@{
+    ViewData["Title"] = "Active dynamic properties";
+}
+
+<h2>Active dynamic properties</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Type</th>
+            <th>Required</th>
+            <th>Associated Product</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.Description</td>
+            <td>@item.Type</td>
+            <td>@item.IsRequired</td>
+            <td><a asp-controller="Product" asp-action="Get" asp-route-id="@item.ProductID">@item.Product</a></td>
+            <td>
+                <a asp-action="Get" asp-route-id="@item.ID">Details</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

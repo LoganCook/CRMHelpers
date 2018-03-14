@@ -19,6 +19,9 @@ namespace Client.Types
             { 5, "Project-based Service" }
         };
 
+        [DataMember(Name = "salesorderdetailid")]
+        public string ID { set; get; }
+
         [DataMember(Name = "_productid_value@OData.Community.Display.V1.FormattedValue")]
         public string Product { set; get; }
 

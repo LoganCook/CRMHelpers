@@ -1,0 +1,33 @@
+﻿@model List<Client.Types.Product>
+
+@{
+    ViewData["Title"] = "Product list";
+}
+
+<h2>Active product list</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Begin Date</th>
+            <th>End Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.Description</td>
+            <td>@item.ValidFromDate</td>
+            <td>@item.ValidToDate</td>
+            <td>
+                <a asp-action="Detail" asp-route-id="@item.ID">Details</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
