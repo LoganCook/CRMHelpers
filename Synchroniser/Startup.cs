@@ -22,7 +22,7 @@ namespace Synchroniser
 
         private void DisposeResources()
         {
-            eRSA.Dispose();
+            if (eRSA != null) eRSA.Dispose();
         }
 
         public IConfiguration Configuration { get; }
