@@ -230,15 +230,17 @@ namespace Client.Entities
             }
         }
 
-        public async Task Create<T>(T content)
+        public async Task<Guid> Create<T>(T content)
         {
             Console.WriteLine($"Is {ENDPOINT} correct?");
             HttpResponseMessage response = await _connector.SendJsonAsync(HttpMethod.Post, ENDPOINT, content);
             if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
             {
-                string newEntityID = response.Headers.GetValues("OData-EntityId").FirstOrDefault();
-                Console.WriteLine($"New entity URI: {newEntityID}");
-                Console.WriteLine("New entity ID: {0}", Utils.GetIdFromUrl(newEntityID));
+                string newEntity = response.Headers.GetValues("OData-EntityId").FirstOrDefault();
+                Console.WriteLine($"New entity URI: {newEntity}");
+                string newEntityID = Utils.GetIdFromUrl(newEntity);
+                Console.WriteLine("New entity ID: {0}", newEntityID);
+                return new Guid(newEntityID);
             }
             else
             {

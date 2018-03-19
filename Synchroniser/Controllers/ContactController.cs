@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Json;
@@ -7,37 +8,40 @@ using Client;
 
 namespace Synchroniser.Controllers
 {
-    public class ContactController : Controller
+    public class ContactController : ControllerBase<ContactController, Client.Entities.Contact, Client.Types.Contact>
     {
-        private readonly ILogger<ContactController> _logger;
-        private readonly ITokenConsumer _crmClient;
-        private Client.Entities.Contact contact;
-
-        public ContactController(ILogger<ContactController> logger, ITokenConsumer crmClient)
+        public ContactController(ILogger<ContactController> logger, ITokenConsumer crmClient) : base(logger, crmClient)
         {
-            _logger = logger;
-            _crmClient = crmClient;
-            contact = new Client.Entities.Contact((CRMClient)_crmClient);
-        }
-
-        public async Task<IActionResult> Get(Guid id)
-        {
-            if (id == Guid.Empty)
-            {
-                return NotFound();
-            }
-
-            var result = await contact.Get<Client.Types.Contact>(id);
-            if (result != null)
-            {
-                return View(result);
-            }
-            return NotFound();
+            entity = new Client.Entities.Contact((CRMClient)_crmClient);
         }
 
         public async Task<IActionResult> Edit(Guid id)
         {
             return await Get(id);
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Client.Types.ContactBase content)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    Guid newID = await entity.Create<Client.Types.ContactBase>(content);
+                    _logger.LogInformation($"Created new contact with id = {newID.ToString()}");
+                    return RedirectToAction("Get", new { id = newID });
+                } catch (HttpRequestException ex)
+                {
+                    _logger.LogError(ex.ToString());
+                }
+            }
+            return View(content);
         }
 
         [HttpPost]
@@ -57,7 +61,7 @@ namespace Synchroniser.Controllers
                     // Cannot use DataContract because selected properties to be updated. Really?
                     JsonObject toUpdate = (JsonObject)JsonValue.Parse("{}");
                     toUpdate["department"] = content.Department;
-                    await contact.Update(content.ID, toUpdate);
+                    await entity.Update(content.ID, toUpdate);
                     _logger.LogDebug($"Updated the Department to {content.Department} for {content.ID}");
                 }
             }
@@ -70,7 +74,7 @@ namespace Synchroniser.Controllers
             if (!string.IsNullOrEmpty(email))
             {
                 _logger.LogDebug($"You are looking for the contact by {email}");
-                var result = await contact.GetByEmail(email);
+                var result = await entity.GetByEmail(email);
                 if (result != null)
                 {
                     return Redirect(Url.Action("Get", new { id = new Guid(result.ID) }));
