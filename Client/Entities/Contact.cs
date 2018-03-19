@@ -9,9 +9,11 @@ namespace Client.Entities
     /// </summary>
     public class Contact : Base
     {
+        public const string ENTITY = "contact";
         public Contact(CRMClient conn) : base(conn)
         {
             ENDPOINT = "contacts";
+            commonFileds = new string[] { "contactid", "firstname", "lastname", "emailaddress1", "new_username", "department" };
         }
 
         /// <summary>

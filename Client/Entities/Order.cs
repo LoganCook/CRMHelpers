@@ -11,6 +11,7 @@ namespace Client.Entities
         public Order(CRMClient conn) : base(conn)
         {
             ENDPOINT = "salesorders";
+            commonFileds = new string[] { "salesorderid", "new_orderid", "description", "name", "statecode" };
         }
 
         #region public queries work with query (utility) methods in Base

@@ -12,6 +12,7 @@ namespace Client.Entities
         public Account(CRMClient conn) : base(conn)
         {
             ENDPOINT = "accounts";
+            commonFileds = new string[] { "accountid", "name", "_parentaccountid_value" };
         }
 
         /// <summary>
@@ -33,7 +34,7 @@ namespace Client.Entities
         /// <returns></returns>
         public async Task<List<Types.Account>> List()
         {
-            string query = Query.Build(new string[] {"name", "_parentaccountid_value"});
+            string query = Query.Build(commonFileds);
             return await List<Types.Account>(query);
         }
 

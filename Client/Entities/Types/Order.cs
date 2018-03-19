@@ -25,12 +25,30 @@ namespace Client.Types
     [DataContract]
     public class Order : OrderBase
     {
+        static Dictionary<short, string> States = new Dictionary<short, string>
+        {
+            { 0, "Active"},
+            { 1, "Submitted"},
+            { 2, "Canceled"},
+            { 3, "Fulfilled"},
+            { 4, "Invoiced"}
+        };
+
         [DataMember(Name = "salesorderid")]
         public string ID { set; get; }
-        
-        [DataMember(Name = "statuscode", EmitDefaultValue = false)]
-        public int Status { get; private set; }
 
+        private short statecode;
+        [DataMember(Name = "statecode", EmitDefaultValue = false)]
+        public string Status
+        {
+            set { statecode = short.Parse(value); }
+            get
+            {
+                return States[statecode];
+            }
+        }
+
+        // Connection role between order and a person: project admin, lead, member
         [DataMember(Name = "role", EmitDefaultValue = false)]
         public string Role { set; get; }
     }
