@@ -1,0 +1,21 @@
+﻿@model Client.Types.Account
+
+@{
+    ViewData["Title"] = "Summary of an Account";
+}
+
+<h2>Summary</h2>
+
+<dl class="dl-horizontal">
+    <dt>Name</dt>
+    <dd><a asp-action="Get" asp-route-id="@Model.ID">@Model.Name</a></dd>
+    @if (!string.IsNullOrEmpty(Model.ParentAccount))
+    {
+        <dt>Parent Account</dt>
+        <dd><a asp-action="Get" asp-route-id="@Model.ParentAccountID">@Model.ParentAccount</a></dd>
+        <dd><a asp-action="GetChildren" asp-route-parentName="@Model.ParentAccount">Other sibling accounts</a></dd>
+    }
+</dl>
+
+<p>See its orders: to come</p>
+<p>See its contacts: to come</p>

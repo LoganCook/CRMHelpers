@@ -48,6 +48,12 @@ namespace Client.Types
             }
         }
 
+        [DataMember(Name = "_customerid_value")]
+        public string CustomerID { set; get; }
+
+        [DataMember(Name = "_customerid_value@OData.Community.Display.V1.FormattedValue")]
+        public string Customer { set; get; }
+
         // Connection role between order and a person: project admin, lead, member
         [DataMember(Name = "role", EmitDefaultValue = false)]
         public string Role { set; get; }

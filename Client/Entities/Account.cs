@@ -78,9 +78,13 @@ namespace Client.Entities
             return await GetJsonStringAsync(ListChildAccountsQuery(parent));
         }
 
-        public async Task<List<Types.Account>> ListChildAccounts(string parent)
+        public Task<List<Types.Account>> ListChildAccounts(string parent)
         {
-            return await List<Types.Account>(ListChildAccountsQuery(parent));
+            if (string.IsNullOrEmpty(parent))
+            {
+                return Task.FromResult(new List<Types.Account>());
+            }
+            return List<Types.Account>(ListChildAccountsQuery(parent));
         }
         #endregion
 

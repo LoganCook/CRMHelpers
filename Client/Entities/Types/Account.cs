@@ -13,5 +13,8 @@ namespace Client.Types
 
         [DataMember(Name = "_parentaccountid_value", EmitDefaultValue = false)]
         public string ParentAccountID { set; get; }
+
+        [DataMember(Name = "_parentaccountid_value@OData.Community.Display.V1.FormattedValue", EmitDefaultValue = false)]
+        public string ParentAccount { set; get; }
     }
 }

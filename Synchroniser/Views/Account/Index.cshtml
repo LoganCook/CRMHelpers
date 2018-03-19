@@ -1,0 +1,29 @@
+﻿@model List<Client.Types.Account>
+
+@{
+    ViewData["Title"] = "Account list";
+    var count = 1;
+}
+
+<h2>Account list</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Parent</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@(count++)</td>
+            <td><a asp-action="Get" asp-route-id="@item.ID">@item.Name</a></td>
+            <td><a asp-action="Get" asp-route-id="@item.ParentAccountID">@item.ParentAccount</a></td>
+        </tr>
+        }
+    </tbody>
+</table>
