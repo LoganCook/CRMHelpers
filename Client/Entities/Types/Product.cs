@@ -80,18 +80,5 @@ namespace Client.Types
 
         [DataMember(Name = "Product_DynamicProperty")]
         public List<Dynamicproperty> Properties { set; get; }
-
-        // FIXME: needed by Pages\Entities\Products\Index.cshtml.cs
-        // once it is removed, these can be removed as all queries are defined in Entity namespace
-        public static string List()
-        {
-            return "products?$filter=statecode eq 0 and productstructure eq 1&$select=name,description";
-        }
-        public static string Get(string name)
-        {
-            // because this is a search, it returns a list with 0 or more records
-            // this is different to using id
-            return $"products?$filter=name eq {name}&$select=productid";
-        }
     }
 }

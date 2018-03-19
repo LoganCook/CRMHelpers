@@ -17,17 +17,17 @@ namespace tests
         static readonly string testGuid = "5a03318f-b812-e711-8117-480fcff1dae1";
 
         [TestMethod]
-        public void VaidateProductGet()
+        public void ValidateQueryBuild()
         {
-            string uri = Product.Get("tester");
-            StringAssert.StartsWith(uri, "products");
-            Console.WriteLine(uri);
-            var query = QueryHelpers.ParseQuery(uri.Replace("products?", ""));
+            string builtQuery = Client.Entities.Query.Build(new string[] { "accountid" }, "name eq some");
+            var query = QueryHelpers.ParseQuery(builtQuery);
             Console.WriteLine(query.Count);
             foreach( var k in query.Keys)
             {
                 Console.WriteLine(k);
             }
+            Assert.IsTrue(query.Count == 2);
+            Assert.IsTrue(query.ContainsKey("$select"));
             Assert.IsTrue(query.ContainsKey("$filter"));
         }
 

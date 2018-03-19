@@ -11,19 +11,20 @@ namespace tests
     {
         const string testGuid = "5a03318f-b812-e711-8117-480fcff1dae1";
 
-        #region Product
         [Fact]
-        public void UriShouldValid()
+        public void ValidateTwoArgQueryBuild()
         {
-            string uri = Product.Get("tester");
-            Assert.StartsWith("products", uri);
-            Console.WriteLine(uri);
-            var query = QueryHelpers.ParseQuery(uri.Replace("products?", ""));
+            string builtQuery = Client.Entities.Query.Build(new string[] { "accountid" }, "name eq some");
+            var query = QueryHelpers.ParseQuery(builtQuery);
+            Console.WriteLine(query.Count);
+            foreach (var k in query.Keys)
+            {
+                Console.WriteLine(k);
+            }
             Assert.Equal(2, query.Count);
-            Assert.True(query.ContainsKey("$filter"));
             Assert.True(query.ContainsKey("$select"));
+            Assert.True(query.ContainsKey("$filter"));
         }
-        #endregion
 
         #region Contact
         [Theory]
@@ -107,7 +108,8 @@ namespace tests
             {
                 ID = testGuid,
                 Name = "testAccount",
-                ParentAccountID = testGuid
+                ParentAccountID = testGuid,
+                ParentAccount = "null"
             };
             string jsonString = Client.CRMClient.SerializeObject<Account>(account);
             JsonObject recover = (JsonObject)JsonValue.Parse(jsonString);
