@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace Client.Types
 {
-    // This is only for connecting Order and Contact with ConnectionRoles in team category
+    // This is only for creating connection Order and Contact with ConnectionRoles in team category
     [DataContract]
     public class Connection
     {

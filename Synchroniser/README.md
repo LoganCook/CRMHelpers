@@ -103,3 +103,11 @@ Accept: application/json
 
 See [Web API EntityType Reference](https://msdn.microsoft.com/en-us/library/mt607894.aspx#bkmk_CollectionValuedNavigationProperties) for what
 __single-valued navigation properties__ or __collection-value navigation properties__ to use with entities.
+
+### CRM service account
+
+The service account which Synchroniser uses (reprsented as a cached token) needs read and write permissions in CRM. Currently there are three roles granted to it:
+
+1. Project Service Automation app access
+1. Reporting
+1. Sales Manager

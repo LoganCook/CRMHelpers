@@ -1,0 +1,25 @@
+﻿@model Client.Types.Order4Creation
+@{
+    ViewData["Title"] = "Create CRM Order demo";
+}
+
+<p class="alert alert-danger">Currently only a place holder with hard-coded code as a demo, in theory, we can create an Order with products in one call</p>
+<h3>Static value @Model.Name</h3>
+<dl class="dl-horizontal">
+    <dt>Description</dt>
+    <dd>@Model.Description</dd>
+    <dt>Order ID</dt>
+    <dd>@Model.OrderID</dd>
+    <dt>Customer ID</dt>
+    <dd>Not showing at the moment</dd>
+</dl>
+<p>Product to be added: eRSA Account (these are from Orderdetail for creatation, so only ID no Name)
+    @foreach (var product in Model.OrderedProducts)
+    {
+        ProductID: <span>@product.ProductID</span> UnitID: <span>@product.UnitID</span>
+    }
+</p>
+
+<form asp-action="Create">
+    <button type="submit">Create</button>
+</form>

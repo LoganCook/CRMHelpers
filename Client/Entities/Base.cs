@@ -63,7 +63,15 @@ namespace Client.Entities
             _connector = conn;
         }
 
+        // Share some basic information with the world
+        /// <summary>
+        /// Common fields
+        /// </summary>
         public string[] Fields { get { return commonFileds; } }
+        /// <summary>
+        /// Connector with CRM backend
+        /// </summary>
+        public CRMClient Connector { get { return _connector; } }
 
         /// <summary>
         /// Get method to backend
