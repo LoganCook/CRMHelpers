@@ -9,6 +9,5 @@
   "include": [
     "wwwroot/scripts"
   ],
-  "compileOnSave": true,
-  "typeAcquisition": {"enable": true }
+  "compileOnSave": true
 }
