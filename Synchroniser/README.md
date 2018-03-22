@@ -104,6 +104,22 @@ Accept: application/json
 See [Web API EntityType Reference](https://msdn.microsoft.com/en-us/library/mt607894.aspx#bkmk_CollectionValuedNavigationProperties) for what
 __single-valued navigation properties__ or __collection-value navigation properties__ to use with entities.
 
+### User focus workflow
+
+1. /Contact/Search: find a user by email.
+2. Editing profile
+3. View orders of the user
+4. View order summary
+5. View ordered products
+6. View properties of an ordered product
+
+### Admin focus workflow
+
+1. /Order
+1. Click 'Details' link to view the order
+1. View properties of an ordered product
+
+
 ### CRM service account
 
 The service account which Synchroniser uses (reprsented as a cached token) needs read and write permissions in CRM. Currently there are three roles granted to it:

@@ -1,0 +1,21 @@
+﻿@model Client.Types.OrderWithProducts
+
+@{
+    ViewData["Title"] = "Order summary";
+}
+
+<h2>Order summary: need more work to make this is useful</h2>
+
+<dl class="dl-horizontal">
+    <dt>Name</dt>
+    <dd>@Model.Name</dd>
+    <dt>ID</dt>
+    <dd><a asp-controller="Orderdetail" asp-action="List" asp-route-id="@Model.ID">@Model.OrderID</a></dd>
+    <dt>Description</dt>
+    <dd>@Model.Description</dd>
+    <dt>Status</dt>
+    <dd>@Model.Status</dd>
+</dl>
+@if(@Model.OrderDetails != null) {
+    @Html.Partial("../Orderdetail/List", Model.OrderDetails)
+}

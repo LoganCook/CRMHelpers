@@ -16,15 +16,26 @@ namespace Synchroniser.Controllers
             entity = new Client.Entities.Order((CRMClient)crmClient);
         }
 
-        // Get an order by its Order ID
-        public async Task<IActionResult> GetByID(string ID)
+        public async Task<IActionResult> GetByID(Guid id)
         {
-            var result = await entity.List<Client.Types.Order>(entity.GetByOrderIDQuery(ID));
+            var result = await entity.List<Client.Types.OrderdetailSimple>(entity.GetByIDQuery(id.ToString()));
             if (result != null && result.Count > 0)
             {
-                return View("Get", result[0]);
+                return View("../Orderdetail/List", result);
             }
-            return NotFound($"Order by id {ID} has not been found.");
+            return NotFound($"Order by id {id} has not been found.");
+        }
+
+        // Get an order by its Order ID
+        public async Task<IActionResult> GetByOrderID(string id)
+        {
+            var result = await entity.List<Client.Types.OrderWithProducts>(entity.GetByOrderIDQuery(id));
+            if (result != null && result.Count > 0)
+            {
+                result[0].OrderDetails = await entity.NextLink<Client.Types.OrderdetailSimple>(result[0].OrderDetailsLink);
+                return View("GetMore", result[0]);
+            }
+            return NotFound($"Order by id {id} has not been found.");
         }
 
         public IActionResult Create()

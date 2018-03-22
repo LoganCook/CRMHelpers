@@ -59,6 +59,16 @@ namespace Client.Types
         public string Role { set; get; }
     }
 
+    [DataContract]
+    public class OrderWithProducts : Order
+    {
+        [DataMember(Name = "order_details@odata.nextLink")]
+        public string OrderDetailsLink { set; get; }
+
+        [DataMember]
+        public List<OrderdetailSimple> OrderDetails { set; get; }
+    }
+
     /// <summary>
     /// Data contractor for creating JSON object for creating in Dynamics
     /// This is only used in serialization

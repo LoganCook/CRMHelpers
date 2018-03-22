@@ -32,7 +32,7 @@
                 <a asp-controller="Account" asp-action="Get" asp-route-id="@item.CustomerID">@item.Customer</a>
             </td>
             <td>
-                <a asp-action="Get" asp-route-id="@item.ID">Details</a>
+                <a asp-action="GetByID" asp-route-id="@item.ID">Details</a>
             </td>
         </tr>
         }

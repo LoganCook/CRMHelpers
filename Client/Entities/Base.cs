@@ -145,6 +145,25 @@ namespace Client.Entities
         }
 
         /// <summary>
+        /// Get a list of T for a @odata.nextLink
+        /// </summary>
+        /// <returns>a list with 0 or more records</returns>
+        /// <see>https://msdn.microsoft.com/en-us/library/gg334767.aspx#Retrieve related entities by expanding navigation properties</see>
+        public async Task<List<T>> NextLink<T>(string url)
+        {
+            try
+            {
+                return CRMClient.DeserializeObject<Types.OData<T>>(await _connector.GetStreamAsync(url)).Value;
+            }
+            catch (NullReferenceException)
+            {
+                // If GetAsync returns null, DeserializeObject returns null so we do the same
+                // This was likely caused by something wrong the set up code: wrong end point etc
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Get a list of instance of an entity with common fields
         /// </summary>
         /// <typeparam name="T"></typeparam>

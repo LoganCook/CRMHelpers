@@ -19,17 +19,46 @@ namespace Client.Entities
         /// Get order by its eRSA order ID
         /// </summary>
         /// <param name="id">eRSA order ID: Cloud blar blar, or GOSA0001 etc</param>
-        /// <returns></returns>
+        /// <returns>Basic information of an Order and Orderline information</returns>
+        /* With filter, expand returns nextLink: Retrieve related entities by expanding collection-valued navigation properties
+         * {
+              "@odata.context":"https://ersasandbox.crm6.dynamics.com/api/data/v8.2/$metadata#salesorders(salesorderid,new_orderid,description,name,statecode,_customerid_value,order_details,order_details(_productid_value,priceperunit,quantity,manualdiscountamount_base,producttypecode,_uomid_value))","value":[
+                {
+                  "@odata.etag":"W/\"9960853\"","salesorderid":"e2c5a386-a821-e811-8131-480fcff12ac1","new_orderid":"lidemoHPCwithPrioritisedQueue","description":null,"name":"Demo of HPC with Prioritised Queue","statecode":0,"_customerid_value":"c129372b-5063-e611-80e3-c4346bc4de3c",
+                  "order_details":[],
+                  "order_details@odata.nextLink":"https://ersasandbox.crm6.dynamics.com/api/data/v8.2/salesorders(e2c5a386-a821-e811-8131-480fcff12ac1)/order_details?$select=_productid_value,priceperunit,quantity,manualdiscountamount_base,producttypecode,_uomid_value"
+                }
+              ]
+            }
+        */
         public string GetByOrderIDQuery(string id)
         {
-            return $"?$filter=new_orderid eq '{id}'";
+            Dictionary<string, string> parts = new Dictionary<string, string>
+            {
+                { "$select", Query.CreateList(commonFileds) },
+                { "$filter", $"new_orderid eq '{id}'"},
+                { "$expand", $"order_details($select=_productid_value,priceperunit,quantity,manualdiscountamount_base,producttypecode,_uomid_value)" }
+            };
+            return Query.Build(parts);
         }
+
+        // https://ersasandbox.crm6.dynamics.com/api/data/v8.2/salesorders(e2c5a386-a821-e811-8131-480fcff12ac1)/order_details?$select=_productid_value,priceperunit,quantity,manualdiscountamount_base,producttypecode,_uomid_value
+        /// <summary>
+        /// Get order by its ID with products information: name and type
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public string GetByIDQuery(string id)
+        {
+            return $"({id})/order_details?$select=_productid_value,priceperunit,quantity,manualdiscountamount_base,producttypecode,_uomid_value";
+        }
+
         #endregion
 
         #region private queries
         private string GetByNameQuery(string name)
         {
-            return $"?$filter=name eq '{name}'";
+            return Query.Build(commonFileds, $"?$filter=name eq '{name}'");
         }
 
         /// <summary>
