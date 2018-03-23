@@ -109,10 +109,9 @@ __single-valued navigation properties__ or __collection-value navigation propert
 ### User focus workflow
 
 1. /Contact/Search: find a user by email.
-2. Editing profile
-3. View orders of the user
-4. View order summary
-5. View ordered products
+2. Click 'Edit' to edit profile
+3. Click 'See the associated orders' to view orders of the user
+4. Follow the link to view order
 6. View properties of an ordered product
 
 ### Admin focus workflow

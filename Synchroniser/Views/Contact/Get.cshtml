@@ -8,6 +8,6 @@
 
 @Html.Partial("ContactDetails", Model)
 
-<button type="button" class="btn btn-default"><a asp-action="GetOrders" asp-route-id="@Model.ID">See the associated orders</a></button>
+<button type="button" class="btn btn-default"><a asp-controller="Order" asp-action="GetByContactID" asp-route-id="@Model.ID">See the associated orders</a></button>
 
 <button type="button" class="btn btn-default"><a asp-action="Edit" asp-route-id="@Model.ID">Edit</a></button>

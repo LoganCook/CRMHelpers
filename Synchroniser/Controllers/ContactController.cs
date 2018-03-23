@@ -82,26 +82,5 @@ namespace Synchroniser.Controllers
             }
             return View();
         }
-
-        /// <summary>
-        /// Get orders of a Contact
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public async Task<IActionResult> GetOrders(Guid id)
-        {
-            if (id == Guid.Empty)
-            {
-                return NotFound();
-            }
-
-            Client.Entities.Order order = new Client.Entities.Order((CRMClient)_crmClient);
-            var result = await order.ListOrdersOfContact(id);
-            if (result != null)
-            {
-                return View(result);
-            }
-            return NotFound();
-        }
     }
 }

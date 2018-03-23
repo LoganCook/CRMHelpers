@@ -43,6 +43,11 @@ namespace Synchroniser.Controllers
             return View("OfAccount", await entity.ListOrdersOfAccount(id));
         }
 
+        public async Task<IActionResult> GetByContactID(Guid id)
+        {
+            return View("OfContact", await entity.ListOrdersOfContact(id));
+        }
+
         public IActionResult Create()
         {
             Client.Types.Order4Creation dummy = new Client.Types.Order4Creation
