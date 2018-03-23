@@ -6,7 +6,7 @@
 
 <h2>Details of Contact</h2>
 
-@Html.Partial("ContactDetails", Model)
+@Html.Partial("Details", Model)
 
 <button type="button" class="btn btn-default"><a asp-controller="Order" asp-action="GetByContactID" asp-route-id="@Model.ID">See the associated orders</a></button>
 
