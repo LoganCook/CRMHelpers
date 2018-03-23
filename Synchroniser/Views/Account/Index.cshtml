@@ -13,7 +13,7 @@
             <th></th>
             <th>Name</th>
             <th>Parent</th>
-            <th></th>
+            <th>Orders</th>
         </tr>
     </thead>
     <tbody>
@@ -23,6 +23,14 @@
             <td>@(count++)</td>
             <td><a asp-action="Get" asp-route-id="@item.ID">@item.Name</a></td>
             <td><a asp-action="Get" asp-route-id="@item.ParentAccountID">@item.ParentAccount</a></td>
+            @if (item.ParentAccountID == null)
+            {
+                <td><a asp-controller="Order" asp-action="GetByAccountID" asp-route-id="@item.ID">Associated Orders</a></td>
+            } else
+            {
+                <td></td>
+
+            }
         </tr>
         }
     </tbody>

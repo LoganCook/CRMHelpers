@@ -1,0 +1,36 @@
+﻿@model List<Client.Types.Order>
+
+@{
+    ViewData["Title"] = "Order list";
+    var count = 1;
+}
+
+<h2>Orders</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Order ID</th>
+            <th>State</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@(count++)</td>
+            <td>@item.Name</td>
+            <td>@item.Description</td>
+            <td>@item.OrderID</td>
+            <td>@item.Status</td>
+            <td>
+                <a asp-action="GetByID" asp-route-id="@item.ID">Details</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

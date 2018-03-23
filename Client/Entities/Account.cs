@@ -20,35 +20,48 @@ namespace Client.Entities
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public async Task<Types.Account> Get(string name)
+        public Task<Types.Account> Get(string name)
         {
             // because this is a search, it returns a list with 0 or more records
             // this is different to using id
             string query = Query.Build(new string[] {"accountid"}, $"name eq {name}");
-            return await GetEntityAsync<Types.Account>(query);
+            return GetEntityAsync<Types.Account>(query);
         }
 
         /// <summary>
         /// Get a list of Account's name and parentaccountid
         /// </summary>
         /// <returns></returns>
-        public async Task<List<Types.Account>> List()
+        public Task<List<Types.Account>> List()
         {
-            string query = Query.Build(commonFileds);
-            return await List<Types.Account>(query);
+            return List<Types.Account>(ListAccountsQuery());
         }
 
         /// <summary>
         /// Get a list of account which does not have parent account
         /// </summary>
         /// <returns></returns>
-        public async Task<List<Types.Account>> ListTopAccounts()
+        public Task<List<Types.Account>> ListTopAccounts()
         {
-            string query = "?$filter=_parentaccountid_value eq null&$select=name";
-            return await List<Types.Account>(query);
+            return List<Types.Account>("?$filter=_parentaccountid_value eq null&$select=name&$orderby=name");
         }
 
         #region private queries
+
+        /// <summary>
+        /// Build a query to get a list of all accounts
+        /// </summary>
+        /// <returns></returns>
+        private string ListAccountsQuery()
+        {
+            Dictionary<string, string> parts = new Dictionary<string, string>
+            {
+                { "$select", Query.CreateList(commonFileds) },
+                { "$orderby", "name" }
+            };
+            return Query.Build(parts);
+        }
+
         /// <summary>
         /// Build a query to get a list of child accounts of an account defined by its name
         /// </summary>
@@ -73,9 +86,9 @@ namespace Client.Entities
         /// </summary>
         /// <param name="parent"></param>
         /// <returns>The result from Dynamics server as string</returns>
-        public async Task<string> ListChildAccountsString(string parent)
+        public Task<string> ListChildAccountsString(string parent)
         {
-            return await GetJsonStringAsync(ListChildAccountsQuery(parent));
+            return GetJsonStringAsync(ListChildAccountsQuery(parent));
         }
 
         public Task<List<Types.Account>> ListChildAccounts(string parent)

@@ -104,6 +104,8 @@ Accept: application/json
 See [Web API EntityType Reference](https://msdn.microsoft.com/en-us/library/mt607894.aspx#bkmk_CollectionValuedNavigationProperties) for what
 __single-valued navigation properties__ or __collection-value navigation properties__ to use with entities.
 
+## Read only workflows
+
 ### User focus workflow
 
 1. /Contact/Search: find a user by email.
@@ -116,6 +118,13 @@ __single-valued navigation properties__ or __collection-value navigation propert
 ### Admin focus workflow
 
 1. /Order
+1. Click 'Details' link to view the order
+1. View properties of an ordered product
+
+### Organisation admin focus workflow
+
+1. /Account/ListTopAccounts - _optional_
+1. /Order/GetByAccountID
 1. Click 'Details' link to view the order
 1. View properties of an ordered product
 

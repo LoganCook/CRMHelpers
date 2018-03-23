@@ -14,6 +14,12 @@ namespace Synchroniser.Controllers
             entity = new Client.Entities.Account((CRMClient)crmClient);
         }
 
+        public async Task<IActionResult> ListTopAccounts()
+        {
+            // This view has a parent column, which is not helpful
+            return View("index", await entity.ListTopAccounts());
+        }
+
         public async Task<IActionResult> GetChildren(string parentName)
         {
             // This view has a parent column, which is not helpful

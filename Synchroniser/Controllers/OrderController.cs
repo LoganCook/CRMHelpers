@@ -38,6 +38,11 @@ namespace Synchroniser.Controllers
             return NotFound($"Order by id {id} has not been found.");
         }
 
+        public async Task<IActionResult> GetByAccountID(Guid id)
+        {
+            return View("OfAccount", await entity.ListOrdersOfAccount(id));
+        }
+
         public IActionResult Create()
         {
             Client.Types.Order4Creation dummy = new Client.Types.Order4Creation

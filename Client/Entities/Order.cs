@@ -58,15 +58,26 @@ namespace Client.Entities
         #region private queries
         private string GetByNameQuery(string name)
         {
-            return Query.Build(commonFileds, $"?$filter=name eq '{name}'");
+            return Query.Build(commonFileds, $"name eq '{name}'");
         }
 
         /// <summary>
-        /// Query to get orders of a contact by its ID
+        /// Query to get Orders of an Account by its ID
+        /// </summary>
+        /// <param name="accountID"></param>
+        /// <returns></returns>
+        private string GetOrdersOfAccountQuery(Guid accountID)
+        {
+            // https://ersasandbox.crm6.dynamics.com/api/data/v8.2/salesorders?$filter=_accountid_value eq a779d575-c162-e611-80e3-c4346bc43f98&$select=name
+            return Query.Build(commonFileds, $"_accountid_value eq {accountID.ToString()}");
+        }
+
+        /// <summary>
+        /// Query to get Orders of a Contact by its ID
         /// </summary>
         /// <param name="contactID"></param>
         /// <returns></returns>
-        private string GetOrdersOfQuery(Guid contactID)
+        private string GetOrdersOfContactQuery(Guid contactID)
         {
             /*
             <fetch version="1.0" mapping="logical">
@@ -138,7 +149,12 @@ namespace Client.Entities
 
         public Task<List<Types.Order>> ListOrdersOfContact(Guid contactID)
         {
-            return List<Types.Order>(GetOrdersOfQuery(contactID));
+            return List<Types.Order>(GetOrdersOfContactQuery(contactID));
+        }
+
+        public Task<List<Types.Order>> ListOrdersOfAccount(Guid accountID)
+        {
+            return List<Types.Order>(GetOrdersOfAccountQuery(accountID));
         }
     }
 }
