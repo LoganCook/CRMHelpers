@@ -164,7 +164,7 @@ namespace Runners
                     Console.WriteLine($"Found and the contact id = {result.ID}");
                     Log.Information($"{user.DistinguishedName}: found in CRM and the contact id = {result.ID}");
                     string contactID = result.ID;
-                    result = await contact.Get(new Guid(contactID));
+                    result = await contact.Get<Client.Types.Contact>(new Guid(contactID));
                     // No username, need to set
                     if (string.IsNullOrEmpty(result.Username))
                     {
