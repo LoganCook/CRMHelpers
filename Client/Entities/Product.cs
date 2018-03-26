@@ -29,7 +29,7 @@ namespace Client.Entities
         }
 
         /// <summary>
-        /// Get a Product's details and properties, if it is a bundle, get all its bundled products with their details and properties
+        /// Get a Product's details and properties, if it is a family, get all its child products with their details and properties
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -37,16 +37,7 @@ namespace Client.Entities
         {
             // https://ersasandbox.crm6.dynamics.com/api/data/v8.2/products?$select=name,productstructure,_parentproductid_value&$filter=productid eq c3724cbc-b183-e611-80e7-c4346bc4beac or _parentproductid_value eq c3724cbc-b183-e611-80e7-c4346bc4beac&$expand=Product_DynamicProperty($select=name,datatype)
             // Above query returns "Product_DynamicProperty@odata.nextLink":"https://ersasandbox.crm6.dynamics.com/api/data/v8.2/products(c3724cbc-b183-e611-80e7-c4346bc4beac)/Product_DynamicProperty?$select=name,datatype"
-            // for each product. Often a product is not bundle type, so, do normal
-            //Types.Product product = await GetDetail(id);
-            //List<Types.Product> products = new List<Types.Product>();
-            //if (product.Type == "Product Bundle")
-            //{
-            //    products.Add(product);
-            //} else
-            //{
 
-            //}
             string stringID = id.ToString();
             Dictionary<string, string> parts = new Dictionary<string, string>
             {
@@ -56,25 +47,18 @@ namespace Client.Entities
             };
             List<Types.Product> products = await List<Types.Product>(Query.Build(parts));
 
-            int counts = products.Count, i;
-            //Dictionary<string, Task<List<Dynamicproperty>>> trackers = new Dictionary<string, Task<List<Dynamicproperty>>>();
-            //var taskArray = new Task<List<Types.Dynamicproperty>>[counts];  // Did not work. All examples are using List
-            List<Task<List<Types.Dynamicproperty>>> tasks = new List<Task<List<Types.Dynamicproperty>>>();
-
-            //for (i = 0; i < counts; i++)
-            //{
-            //    tasks.Add(Task.Run(async () => { var result = await NextLink<Types.Dynamicproperty>(products[i].PropertiesLink); return result; }));
-            //}
-            //Task.WaitAll(tasks.ToArray());
-            //for (i = 0; i < counts; i++)
-            //{
-            //    products[i].Properties = tasks[i].Result;
-            //}
-            //Task.WaitAll(trackers.Values.ToArray<Task>());
+            int i = 0, counts = products.Count;
+            Task<List<Types.Dynamicproperty>>[] taskArray = new Task<List<Types.Dynamicproperty>>[counts];
 
             foreach (var product in products)
             {
-                product.Properties = await NextLink<Types.Dynamicproperty>(product.PropertiesLink);
+                //product.Properties = await NextLink<Types.Dynamicproperty>(product.PropertiesLink);
+                taskArray[i++] = NextLink<Types.Dynamicproperty>(product.PropertiesLink);
+            }
+            Task.WaitAll(taskArray.ToArray());
+            for (i = 0; i < counts; i++)
+            {
+                products[i].Properties = taskArray[i].Result;
             }
             return products;
         }
