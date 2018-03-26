@@ -49,6 +49,9 @@ namespace Client.Types
             set { productType = short.Parse(value); }
             get { return ProductTypes[productType]; }
         }
+
+        [DataMember(Name = "parentbundleid", EmitDefaultValue = false)]
+        public string ParentbundleID { set; get; }
     }
 
     // To associate new entities to existing entities when they are created you must set the value of single-valued navigation properties using the @odata.bind annotation.

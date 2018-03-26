@@ -13,15 +13,32 @@
     <tbody>
         @foreach (var line in Model)
         {
-            <tr>
-                <td><a asp-controller="Product" asp-action="Get" asp-route-id="@line.ProductID">@line.Product</a></td>
-                <td>@line.ProductType</td>
-                <td>@line.Quantity</td>
-                <td>@line.Unit</td>
-                <td>@line.UnitPrice</td>
-                <td>@line.Discount</td>
-                <td><a asp-controller="PropertyInstance" asp-action="GetProperties" asp-route-id="@line.ID">View</a></td>
-            </tr>
+            // products in a bundle
+            @if (line.ProductType.EndsWith("Bundle Product"))
+            {
+                <tr class="alert alert-warning">
+                    <td><a asp-controller="Product" asp-action="Get" asp-route-id="@line.ProductID">@line.Product</a></td>
+                    <td>@line.ProductType (js link to @line.ParentbundleID)</td>
+                    <td>@line.Quantity</td>
+                    <td>@line.Unit</td>
+                    <td>@line.UnitPrice</td>
+                    <td>@line.Discount</td>
+                    <td><a asp-controller="PropertyInstance" asp-action="GetProperties" asp-route-id="@line.ID">View</a></td>
+                </tr>
+
+            }
+            else
+            {
+                <tr id="@line.ProductID">
+                    <td><a asp-controller="Product" asp-action="GetBundle" asp-route-id="@line.ProductID">@line.Product</a></td>
+                    <td>@line.ProductType</td>
+                    <td>@line.Quantity</td>
+                    <td>@line.Unit</td>
+                    <td>@line.UnitPrice</td>
+                    <td>@line.Discount</td>
+                    <td><a asp-controller="PropertyInstance" asp-action="GetProperties" asp-route-id="@line.ID">View</a></td>
+                </tr>
+            }
         }
     </tbody>
 </table>

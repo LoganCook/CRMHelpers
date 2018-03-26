@@ -26,13 +26,16 @@ namespace Synchroniser.Controllers
             return NotFound($"Order by id {id} has not been found.");
         }
 
-        // Get an order by its Order ID
+        // Get an order by its Order ID which should be unique in the system. On 20180323, it has not been enforced.
         public async Task<IActionResult> GetByOrderID(string id)
         {
             var result = await entity.List<Client.Types.OrderWithProducts>(entity.GetByOrderIDQuery(id));
             if (result != null && result.Count > 0)
             {
                 result[0].OrderDetails = await entity.NextLink<Client.Types.OrderdetailSimple>(result[0].OrderDetailsLink);
+                // TODO: add code to do thing with bundles:
+                // bundle with required products - priced at bundle level
+                // bundle with optional products - priced as the total amount of all bundled products
                 return View("GetMore", result[0]);
             }
             return NotFound($"Order by id {id} has not been found.");

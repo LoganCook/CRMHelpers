@@ -11,7 +11,7 @@ namespace Client.Entities
         public Orderdetail(CRMClient conn) : base(conn)
         {
             ENDPOINT = "salesorderdetails";
-            commonFileds = new string[] { "salesorderdetailid", "_productid_value", "priceperunit", "quantity", "manualdiscountamount_base", "producttypecode", "_uomid_value" };
+            commonFileds = new string[] { "salesorderdetailid", "_productid_value", "parentbundleid", "priceperunit", "quantity", "manualdiscountamount_base", "producttypecode", "_uomid_value" };
         }
 
         #region private queries
