@@ -17,4 +17,15 @@ namespace Client.Types
         [DataMember(Name = "value")]
         public List<T> Value { get; set; }
     }
+
+    public class Maps {
+        static public Dictionary<short, string> States = new Dictionary<short, string>
+        {
+            { 0, "Active"},
+            { 1, "Retired/Inactive"},
+            { 2, "Draft"},
+            { 3, "Under Revision"}
+        };
+    }
+
 }

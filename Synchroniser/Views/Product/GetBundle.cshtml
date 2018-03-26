@@ -1,0 +1,37 @@
+﻿@model List<Client.Types.ProductAssociation>
+
+@{
+    ViewData["Title"] = "Product list";
+}
+
+<h2>List of Bundled product of <a asp-action="Get" asp-route-id="@Model[0].Bundle.ID">@Model[0].Bundle.Name</a></h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Product Number</th>
+            <th>Description</th>
+            <th>Quantity</th>
+            <th>Required</th>
+            <th>Status</th>
+            <th>Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@item.Association.Name</td>
+            <td>@item.Association.ProductNumber</td>
+            <td>@item.Association.Description</td>
+            <td>@item.Quantity</td>
+            <td>@item.Required</td>
+            <td>@item.Status</td>
+            <td>
+                <a asp-action="Get" asp-route-id="@item.Association.ID">View</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

@@ -28,12 +28,18 @@ namespace Client.Entities
             return GetEntityAsync<Types.Product>($"({id.ToString()})" + Query.Build(parts));
         }
 
+        public Task<List<Types.ProductAssociation>> GetAssociated(Guid id)
+        {
+            // https://ersasandbox.crm6.dynamics.com/api/data/v8.2/productassociations?$filter=_productid_value eq e1724d11-9a21-e811-8131-480fcff12ac1&$expand=associatedproduct
+            return new ProductAssociation(Connector).GetBundled(id);
+        }
+
         /// <summary>
         /// Get a Product's details and properties, if it is a family, get all its child products with their details and properties
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<List<Types.Product>> GetDetailBundleOrNot(Guid id)
+        public async Task<List<Types.Product>> GetFamily(Guid id)
         {
             // https://ersasandbox.crm6.dynamics.com/api/data/v8.2/products?$select=name,productstructure,_parentproductid_value&$filter=productid eq c3724cbc-b183-e611-80e7-c4346bc4beac or _parentproductid_value eq c3724cbc-b183-e611-80e7-c4346bc4beac&$expand=Product_DynamicProperty($select=name,datatype)
             // Above query returns "Product_DynamicProperty@odata.nextLink":"https://ersasandbox.crm6.dynamics.com/api/data/v8.2/products(c3724cbc-b183-e611-80e7-c4346bc4beac)/Product_DynamicProperty?$select=name,datatype"

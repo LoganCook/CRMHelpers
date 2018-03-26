@@ -28,5 +28,20 @@ namespace Synchroniser.Controllers
         {
             return View(await entity.GetDetail(id));
         }
+
+        public async Task<IActionResult> GetBundle(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                return NotFound($"{id.ToString()} is invalid");
+            }
+
+            var bundle = await entity.GetAssociated(id);
+            if (bundle != null && bundle.Count != 0)
+            {
+                return View(bundle);
+            }
+            return NotFound($"Cannot find {id.ToString()}");
+        }
     }
 }

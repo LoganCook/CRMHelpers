@@ -78,7 +78,14 @@ namespace Client.Types
         [DataMember(Name = "_defaultuomid_value@OData.Community.Display.V1.FormattedValue")]
         public string Unit { set; get; }
 
-        [DataMember(Name = "Product_DynamicProperty")]
+        [DataMember(Name = "Product_DynamicProperty", EmitDefaultValue = false)]
         public List<Dynamicproperty> Properties { set; get; }
+
+        [DataMember(Name = "Product_DynamicProperty@odata.nextLink", EmitDefaultValue = false)]
+        public string PropertiesLink { set; get; }
+
+        // For bundled product
+        [DataMember(Name = "quantity", EmitDefaultValue = false)]
+        public string Quantity { set; get; }
     }
 }

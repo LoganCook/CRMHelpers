@@ -32,6 +32,10 @@
             <td>@item.Unit</td>
             <td>
                 <a asp-action="Get" asp-route-id="@item.ID">View</a>
+            @if (item.Type == "Product Bundle")
+            {
+               <a asp-action="GetBundle" asp-route-id="@item.ID">Bundled Products</a>
+            }
             </td>
         </tr>
         }
