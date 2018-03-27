@@ -257,10 +257,36 @@ namespace Client.Entities
             }
         }
 
+        /// <summary>
+        /// Create an entity with the content of an instance of one of types
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="content"></param>
+        /// <returns></returns>
         public async Task<Guid> Create<T>(T content)
         {
-            Console.WriteLine($"Is {ENDPOINT} correct?");
             HttpResponseMessage response = await _connector.SendJsonAsync(HttpMethod.Post, ENDPOINT, content);
+            return await VerifyCreation(response);
+        }
+
+        /// <summary>
+        /// Create an entity with the content of an instance of JsonObject
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public async Task<Guid> Create(JsonObject content)
+        {
+            HttpResponseMessage response = await _connector.SendJsonAsync(HttpMethod.Post, ENDPOINT, content);
+            return await VerifyCreation(response);
+        }
+
+        /// <summary>
+        /// Verify the response of a create action and return the id of the newly created if the action was successful
+        /// </summary>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        private async Task<Guid> VerifyCreation(HttpResponseMessage response)
+        {
             if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
             {
                 string newEntity = response.Headers.GetValues("OData-EntityId").FirstOrDefault();

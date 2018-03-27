@@ -34,9 +34,9 @@ namespace Client.Entities
         /// <param name="emailAddress"></param>
         /// <returns></returns>
         // eRSA has emailaddress1 as a key in Contact, so there is always only one Contact returned
-        public async Task<Types.Contact> GetByEmail(string emailAddress)
+        public Task<Types.Contact> GetByEmail(string emailAddress)
         {
-            return await GetEntityAsync<Types.Contact>(GetByEmailQuery(emailAddress));
+            return GetEntityAsync<Types.Contact>(GetByEmailQuery(emailAddress));
         }
 
         /// <summary>

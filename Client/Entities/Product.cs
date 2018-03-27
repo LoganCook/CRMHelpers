@@ -58,10 +58,9 @@ namespace Client.Entities
 
             foreach (var product in products)
             {
-                //product.Properties = await NextLink<Types.Dynamicproperty>(product.PropertiesLink);
                 taskArray[i++] = NextLink<Types.Dynamicproperty>(product.PropertiesLink);
             }
-            Task.WaitAll(taskArray.ToArray());
+            await Task.WhenAll(taskArray.ToArray());
             for (i = 0; i < counts; i++)
             {
                 products[i].Properties = taskArray[i].Result;

@@ -156,7 +156,7 @@ namespace Runners
             // Check the existence of a user by email address
             async Task CheckAndPrint(User user)
             {
-                PrintUser(user);  // FIXME: this may not work well in parallel by just print user details
+                PrintUser(user);
                 Client.Types.Contact result = await contact.GetByEmail(user.Email);
                 if (result != null)
                 {
@@ -197,7 +197,7 @@ namespace Runners
                     } else
                     {
                         Log.Debug($"New contact will be created for {user.DistinguishedName}");
-                        await contact.Create<JsonObject>(ConvertADUserToJson(user, accountID));
+                        await contact.Create(ConvertADUserToJson(user, accountID));
                         createdUsers.Add(user.DistinguishedName);
                         Log.Information($"New contact has been created for {user.DistinguishedName}");
                     }
@@ -208,21 +208,34 @@ namespace Runners
             int i = 0;
             foreach (var user in newUsers)
             {
-                Log.Information("task {0}", i + 1);
+                taskArray[i++] = CheckAndPrint(user);
+            }
+
+            try
+            {
+                await Task.WhenAll(taskArray);
+            } catch (Exception ex)
+            {
+                Log.Error(ex, "Error caught when waiting.");
+            }
+
+            i = 0;
+            foreach (var user in newUsers)
+            {
                 try
                 {
-                    taskArray[i++] = await Task.Factory.StartNew(() => CheckAndPrint(user));
-                } catch (Exception ex)
+                    taskArray[i++].GetAwaiter().GetResult();
+                }
+                catch (Exception ex)
                 {
                     exceptionUsers.Add(new Dictionary<string, string>
                     {
                         { "DistinguishedName", user.DistinguishedName},
-                        { "Exception", ex.ToString() }
+                        { "Exception", ex.Message }
                     });
-                    Log.Error(ex, $"Failed attempt when processing {user.DistinguishedName}.");
+                    Log.Error(ex, "Failed attempt when processing {user}.", user.DistinguishedName);
                 }
             }
-            Task.WaitAll(taskArray);
 
             return (createdUsers, unabledUsers, exceptionUsers);
         }

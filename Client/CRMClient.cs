@@ -229,9 +229,9 @@ namespace Client
         /// <param name="relativePath"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public async Task<HttpResponseMessage> SendJsonAsync(HttpMethod method, string relativePath, JsonObject value)
+        public Task<HttpResponseMessage> SendJsonAsync(HttpMethod method, string relativePath, JsonObject value)
         {
-            return await SendJsonAsync(method, relativePath, value.ToString());
+            return SendJsonAsync(method, relativePath, value.ToString());
         }
 
         /// <summary>
@@ -242,9 +242,9 @@ namespace Client
         /// <param name="relativePath"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public async Task<HttpResponseMessage> SendJsonAsync<T>(HttpMethod method, string relativePath, T value)
+        public Task<HttpResponseMessage> SendJsonAsync<T>(HttpMethod method, string relativePath, T value)
         {
-            return await SendJsonAsync(method, relativePath, SerializeObject(value));
+            return SendJsonAsync(method, relativePath, SerializeObject(value));
         }
 
         /// <summary>
