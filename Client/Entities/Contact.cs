@@ -25,7 +25,7 @@ namespace Client.Entities
         {
             if (string.IsNullOrEmpty(emailAddress))
                 throw new ArgumentException("email for checking a Contact has not been provided");
-            return string.Format("(emailaddress1='{0}')?$select=contactid", emailAddress);
+            return Query.Build(new string[] { "contactid" }, $"emailaddress1 eq '{emailAddress}'");
         }
 
         /// <summary>
@@ -34,9 +34,12 @@ namespace Client.Entities
         /// <param name="emailAddress"></param>
         /// <returns></returns>
         // eRSA has emailaddress1 as a key in Contact, so there is always only one Contact returned
-        public Task<Types.Contact> GetByEmail(string emailAddress)
+        public async Task<Types.Contact> GetByEmail(string emailAddress)
         {
-            return GetEntityAsync<Types.Contact>(GetByEmailQuery(emailAddress));
+            var result = await List<Types.Contact>(GetByEmailQuery(emailAddress));
+            if (result.Count == 1)
+                return result[0];
+            return null;
         }
 
         /// <summary>
