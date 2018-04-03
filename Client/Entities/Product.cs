@@ -18,8 +18,6 @@ namespace Client.Entities
 
         public Task<Types.Product> GetDetail(Guid id)
         {
-            // FIXME: if this is a bundle, it does not have information of bundled products
-            // https://ersasandbox.crm6.dynamics.com/api/data/v8.2/products?$select=name,productstructure,_parentproductid_value&$filter=productid eq c3724cbc-b183-e611-80e7-c4346bc4beac or _parentproductid_value eq c3724cbc-b183-e611-80e7-c4346bc4beac&$expand=Product_DynamicProperty($select=name,datatype)
             Dictionary<string, string> parts = new Dictionary<string, string>
             {
                 { "$select", Query.CreateList(commonFileds) },
@@ -28,6 +26,11 @@ namespace Client.Entities
             return GetEntityAsync<Types.Product>($"({id.ToString()})" + Query.Build(parts));
         }
 
+        /// <summary>
+        /// Get associated products of a product which is either a bundle or kit
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Task<List<Types.ProductAssociation>> GetAssociated(Guid id)
         {
             // https://ersasandbox.crm6.dynamics.com/api/data/v8.2/productassociations?$filter=_productid_value eq e1724d11-9a21-e811-8131-480fcff12ac1&$expand=associatedproduct
