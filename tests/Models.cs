@@ -98,6 +98,56 @@ namespace tests
             Assert.Equal("description", recover["description"]);
             Assert.Equal("new_orderid", recover["new_orderid"]);
         }
+
+        [Fact]
+        public void OrderdetailSimpleCanDeserialize()
+        {
+            // PriceLocked default false
+            // ParentbundleID default null
+            OrderdetailSimple orderDetail = new OrderdetailSimple
+            {
+                ID = testGuid,
+                Product = "testProduct",
+                ProductID = testGuid,
+                UnitPrice = 0.1F,
+                Discount = 0F,
+                PriceLocked = false,
+                Quantity = 1,
+                UnitID = testGuid,
+                Unit = "Year",
+                ProductType = "2",
+                ParentbundleID = testGuid
+            };
+
+            string jsonString = Client.CRMClient.SerializeObject<OrderdetailSimple>(orderDetail);
+            JsonObject recover = (JsonObject)JsonValue.Parse(jsonString);
+            // ProductType is omitted
+            Assert.Equal(typeof(OrderdetailSimple).GetProperties().Length, recover.Count);
+            Assert.Equal("Bundle", orderDetail.ProductType);
+            JsonObject obj = new JsonObject
+            {
+                { "salesorderdetailid", testGuid },
+                { "_productid_value@OData.Community.Display.V1.FormattedValue", "DemoProduct" },
+                { "_productid_value", testGuid },
+                { "priceperunit", 0 },
+                { "salesorderispricelocked", false },
+                { "manualdiscountamount_base", 0 },
+                { "quantity", 1 },
+                { "_uomid_value", testGuid},
+                { "_uomid_value@OData.Community.Display.V1.FormattedValue", "Year" },
+                { "producttypecode", 2 },
+                { "parentbundleid", null }
+            };
+            using (MemoryStream stringStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(obj.ToString())))
+            {
+                OrderdetailSimple deserialized = Client.CRMClient.DeserializeObject<OrderdetailSimple>(stringStream);
+                Assert.Equal("Bundle", deserialized.ProductType);
+                Assert.True(deserialized.PriceLocked == false);
+                Assert.Equal<float>(0, deserialized.Discount);
+                Assert.Equal<int>(1, deserialized.Quantity);
+            }
+        }
+
         #endregion
 
         #region Account

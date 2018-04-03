@@ -31,6 +31,9 @@ namespace Client.Types
         [DataMember(Name = "priceperunit")]
         public float UnitPrice { set; get; }
 
+        [DataMember(Name = "salesorderispricelocked")]
+        public bool PriceLocked { set; get; }
+
         [DataMember(Name = "manualdiscountamount_base")]
         public float Discount { set; get; }
 
@@ -43,13 +46,14 @@ namespace Client.Types
         [DataMember(Name = "_uomid_value@OData.Community.Display.V1.FormattedValue")]
         public string Unit { set; get; }
 
-        private short productType;
-        [DataMember(Name = "producttypecode")]
+        private short productType = 1;
+        [DataMember(Name = "producttypecode", EmitDefaultValue = false)]
         public string ProductType {
             set { productType = short.Parse(value); }
             get { return ProductTypes[productType]; }
         }
 
+        // parentbundleid points to a salesorderdetailid
         [DataMember(Name = "parentbundleid", EmitDefaultValue = false)]
         public string ParentbundleID { set; get; }
     }
