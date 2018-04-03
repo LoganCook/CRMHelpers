@@ -7,6 +7,7 @@ namespace Client.Entities
     public class Order : Base
     {
         public const string ENTITY = "salesorder";
+        const string ORDERLINEFIELDS = "=_productid_value,priceperunit,quantity,manualdiscountamount_base,producttypecode,_uomid_value";
 
         public Order(CRMClient conn) : base(conn)
         {
@@ -37,7 +38,7 @@ namespace Client.Entities
             {
                 { "$select", Query.CreateList(commonFileds) },
                 { "$filter", $"new_orderid eq '{id}'"},
-                { "$expand", $"order_details($select=_productid_value,priceperunit,quantity,manualdiscountamount_base,producttypecode,_uomid_value)" }
+                { "$expand", $"order_details($select={ORDERLINEFIELDS})" }
             };
             return Query.Build(parts);
         }
@@ -50,7 +51,7 @@ namespace Client.Entities
         /// <returns></returns>
         public string GetByIDQuery(string id)
         {
-            return $"({id})/order_details?$select=_productid_value,priceperunit,quantity,manualdiscountamount_base,producttypecode,_uomid_value";
+            return $"({id})/order_details?$select={ORDERLINEFIELDS}";
         }
 
         #endregion
