@@ -204,7 +204,8 @@ namespace Runners
                 }
             }
 
-            Task[] taskArray = new Task[newUsers.Count];
+            int userCount = newUsers.Count;
+            Task[] taskArray = new Task[userCount];
             int i = 0;
             foreach (var user in newUsers)
             {
@@ -214,26 +215,20 @@ namespace Runners
             try
             {
                 await Task.WhenAll(taskArray);
-            } catch (Exception ex)
-            {
-                Log.Error(ex, "Error caught when waiting.");
             }
-
-            i = 0;
-            foreach (var user in newUsers)
-            {
-                try
+            catch {
+                Log.Error("There were errors when checking AD users in CRM.");
+                for(i = 0; i < userCount; i++)
                 {
-                    taskArray[i++].GetAwaiter().GetResult();
-                }
-                catch (Exception ex)
-                {
-                    exceptionUsers.Add(new Dictionary<string, string>
+                    if (taskArray[i].IsFaulted)
                     {
-                        { "DistinguishedName", user.DistinguishedName},
-                        { "Exception", ex.Message }
-                    });
-                    Log.Error(ex, "Failed attempt when processing {user}.", user.DistinguishedName);
+                        exceptionUsers.Add(new Dictionary<string, string>
+                        {
+                            { "DistinguishedName", newUsers[i].DistinguishedName},
+                            { "Exception", taskArray[i].Exception.Message }
+                        });
+                        Log.Error(taskArray[i].Exception, "Failed attempt when processing {user}.", newUsers[i].DistinguishedName);
+                    }
                 }
             }
 
